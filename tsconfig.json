@@ -11,8 +11,8 @@
     "suppressImplicitAnyIndexErrors": true
   },
   "files": [
-    "src/app/*.ts",
-    "src/app/**/*.ts"
+    "src/ui/*.ts",
+    "src/ui/**/*.ts"
   ],
   "compileOnSave": true,
   "exclude": [
