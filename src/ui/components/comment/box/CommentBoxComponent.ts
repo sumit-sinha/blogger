@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 @Component({
 	selector: "comment-box",
@@ -20,40 +20,7 @@ import { Component } from "@angular/core";
 })
 
 export class CommentBoxComponent {
-	comments = [{
-		profile: {
-			name: "Start Bootstrap",
-			image: "http://placehold.it/64x64",
-			link: "http://www.google.com/"
-		},
-		message: {
-			date: new Date(),
-			text: "Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.",
-		},
-		children: [{
-			comments: [{
-				profile: {
-					name: "Sub Bootstrap 1"
-					image: "http://placehold.it/64x64",
-					link: "http://www.google.com/"
-				},
-				message: {
-					date: new Date(),
-					text: "Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus."
-				}
-			}]
-		}, {
-			comments: [{
-				profile: {
-					name: "Sub Bootstrap 2"
-					image: "http://placehold.it/64x64",
-					link: "http://www.google.com/"
-				},
-				message: {
-					date: new Date(),
-					text: "Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus."
-				}
-			}]
-		}]
-	}]
+	
+	@Input()
+	comments: Array;
 }

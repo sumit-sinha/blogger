@@ -16,7 +16,7 @@ var CommentMessageComponent = (function () {
 }());
 __decorate([
     core_1.Input(),
-    __metadata("design:type", Object)
+    __metadata("design:type", Array)
 ], CommentMessageComponent.prototype, "comments", void 0);
 CommentMessageComponent = __decorate([
     core_1.Component({

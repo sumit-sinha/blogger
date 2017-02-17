@@ -26,5 +26,5 @@ import { Component, Input, ViewEncapsulation } from "@angular/core";
 export class CommentMessageComponent {
 
 	@Input()
-	comments: Object;
+	comments: Array;
 }
