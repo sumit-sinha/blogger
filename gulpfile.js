@@ -42,14 +42,6 @@ gulp.task('copy:libs', ['clean'], function() {
     }));
 });
 
-gulp.task('sass:bootstrap', ['clean'], function () {
-  return gulp.src(paths.bootstrapSassFiles)
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest(function(file) {
-      return paths.bootstrapDist;
-    }));
-});
-
 gulp.task('sass:components', ['clean'], function () {
   return gulp.src(paths.srcSassFiles)
     .pipe(sass().on('error', sass.logError))
@@ -67,6 +59,5 @@ gulp.task('compile', ['clean'], function () {
     .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('sass', ['sass:components', 'sass:bootstrap'])
-gulp.task('prepare', ['clean', 'compile', 'copy:libs', 'sass']);
+gulp.task('prepare', ['clean', 'compile', 'copy:libs', 'sass:components']);
 gulp.task('default', ['prepare']);

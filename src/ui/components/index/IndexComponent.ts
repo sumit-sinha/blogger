@@ -122,7 +122,8 @@ import { Component } from "@angular/core";
 
 	    </div>
 	    <!-- /.container -->
-	`
+	`,
+	styles: [".container{margin-top: 50px;}"]
 })
 
 export class IndexComponent {}
