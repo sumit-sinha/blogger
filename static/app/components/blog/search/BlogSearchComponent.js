@@ -8,9 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var ApplicationDataHelper_1 = require("../../../helpers/data/ApplicationDataHelper");
 var BlogSearchComponent = (function () {
     function BlogSearchComponent() {
+        this.dataHelper = ApplicationDataHelper_1.ApplicationDataHelper.getInstance();
     }
     return BlogSearchComponent;
 }());
@@ -21,7 +24,8 @@ __decorate([
 BlogSearchComponent = __decorate([
     core_1.Component({
         selector: "blog-search",
-        template: "\n\t\t<div class=\"well\">\n\t\t\t<h4>{{ searchData.title }}</h4>\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" class=\"form-control\">\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button class=\"btn btn-default\" type=\"button\">\n\t\t\t\t\t\t<span class=\"glyphicon glyphicon-search\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</div>\n\t"
-    })
+        template: "\n\t\t<div class=\"well\">\n\t\t\t<h4>{{ this.dataHelper.getLabel(\"tx_search_blog\") }}</h4>\n\t\t\t<div class=\"input-group\">\n\t\t\t\t<input type=\"text\" class=\"form-control\">\n\t\t\t\t<span class=\"input-group-btn\">\n\t\t\t\t\t<button class=\"btn btn-default\" type=\"button\">\n\t\t\t\t\t\t<span class=\"glyphicon glyphicon-search\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t</div>\n\t"
+    }),
+    __metadata("design:paramtypes", [])
 ], BlogSearchComponent);
 exports.BlogSearchComponent = BlogSearchComponent;

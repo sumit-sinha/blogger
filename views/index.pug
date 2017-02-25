@@ -8,19 +8,19 @@ html(lang='en')
 		meta(name='author', content='ssinha')
 		title SaberBlogs
 
-		link(href='styles/bootstrap.css', rel='stylesheet')
+		link(href='/styles/bootstrap.css', rel='stylesheet')
 	body
 
-		blog please wait...
+		blog(init-data= data) please wait...
 
-		script(src='scripts/jquery.min.js')
-		script(src='scripts/jquery.hotkeys.js')
-		script(src='scripts/bootstrap-wysiwyg.js')
+		script(src='/scripts/jquery.min.js')
+		script(src='/scripts/tinymce.js')
+		script(src='/scripts/tinymce_theme.js')
 
-		script(src='app/node_modules/zone.js/dist/zone.min.js')
-		script(src='app/node_modules/reflect-metadata/Reflect.js')
-		script(src='app/node_modules/systemjs/dist/system.src.js')
-		script(src='app/system.config.js')
+		script(src='/app/node_modules/zone.js/dist/zone.min.js')
+		script(src='/app/node_modules/reflect-metadata/Reflect.js')
+		script(src='/app/node_modules/systemjs/dist/system.src.js')
+		script(src='/app/system.config.js')
 		script.
 			System.import("app").catch(function(err){
 				console.error(err);

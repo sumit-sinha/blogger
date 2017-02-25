@@ -6,12 +6,10 @@ const sass = require('gulp-sass');
 
 const paths = {
   dist: 'static/app',
-  bootstrapDist: 'static/styles',
   distFiles: 'static/app/**/*',
   srcFiles: 'src/ui/**/*',
   srcTsFiles: 'src/ui/**/*.ts',
-  srcSassFiles: 'src/ui/components/**/*.scss',
-  bootstrapSassFiles: 'src/ui/styles/**/*.scss'
+  srcSassFiles: 'src/ui/**/*.scss'
 }
 
 gulp.task('clean', function () {
@@ -23,8 +21,10 @@ gulp.task('copy:libs', ['clean'], function() {
       'node_modules/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
       'node_modules/@angular/platform-browser/bundles/platform-browser.umd.js',
       'node_modules/@angular/core/bundles/core.umd.js',
+      'node_modules/@angular/router/bundles/router.umd.js',
       'node_modules/@angular/compiler/bundles/compiler.umd.js',
       'node_modules/@angular/common/bundles/common.umd.js',
+      'node_modules/@angular/http/bundles/http.umd.js',
       'node_modules/systemjs/dist/system.src.js',
       'node_modules/zone.js/dist/zone.min.js',
       'node_modules/reflect-metadata/Reflect.js',

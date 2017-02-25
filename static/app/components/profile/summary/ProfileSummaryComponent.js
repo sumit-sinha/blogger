@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var ProfileSummaryComponent = (function () {
     function ProfileSummaryComponent() {
@@ -21,7 +22,7 @@ __decorate([
 ProfileSummaryComponent = __decorate([
     core_1.Component({
         selector: "profile-summary",
-        template: "\n\t\t<div class=\"well\">\n\t\t\t<h4>Side Widget Well</h4>\n\t\t\t<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>\n\t\t</div>\n\t"
+        template: "\n\t\t<div class=\"well\" *ngIf=\"profile\">\n\t\t\t<h4>Side Widget Well</h4>\n\t\t\t<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>\n\t\t</div>\n\t"
     })
 ], ProfileSummaryComponent);
 exports.ProfileSummaryComponent = ProfileSummaryComponent;

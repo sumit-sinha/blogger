@@ -1,10 +1,11 @@
 import { Component, Input } from "@angular/core";
+import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelper";
 
 @Component({
 	selector: "blog-search",
 	template: `
 		<div class="well">
-			<h4>{{ searchData.title }}</h4>
+			<h4>{{ this.dataHelper.getLabel("tx_search_blog") }}</h4>
 			<div class="input-group">
 				<input type="text" class="form-control">
 				<span class="input-group-btn">
@@ -21,4 +22,10 @@ export class BlogSearchComponent {
 
 	@Input()
 	searchData: Object;
+
+	dataHelper: ApplicationDataHelper;
+
+	constructor() {
+		this.dataHelper = ApplicationDataHelper.getInstance();
+	}
 }

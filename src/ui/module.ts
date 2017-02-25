@@ -1,31 +1,74 @@
 import { NgModule } from "@angular/core";
+import { HttpModule } from "@angular/http";
+import { APP_BASE_HREF } from '@angular/common';
+import { RouterModule } from "@angular/router";
 import { BrowserModule } from "@angular/platform-browser";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 
 import { IndexPageComponent } from "./pages/index/IndexPageComponent";
-import { BlogPageComponent } from "./pages/blog/BlogPageComponent";
+import { BlogPageComponent } from "./pages/blog/display/BlogPageComponent";
+import { BlogEditPageComponent } from "./pages/blog/edit/BlogEditPageComponent";
+import { BlogListPageComponent } from "./pages/blog/list/BlogListPageComponent";
 import { NavigationBarComponent } from "./components/navigation/NavigationBarComponent";
 import { BlogListComponent } from "./components/blog/list/BlogListComponent";
 import { BlogSearchComponent } from "./components/blog/search/BlogSearchComponent";
 import { BlogContentComponent } from "./components/blog/content/BlogContentComponent";
+import { BlogEditorComponent } from "./components/blog/editor/BlogEditorComponent";
 import { ProfileSummaryComponent } from "./components/profile/summary/ProfileSummaryComponent";
-import { FooterComponent } from "./components/footer/FooterComponent";
+import { ProfileLoginComponent } from "./components/profile/login/ProfileLoginComponent";
 import { CommentBoxComponent } from "./components/comment/box/CommentBoxComponent";
 import { CommentMessageComponent } from "./components/comment/message/CommentMessageComponent";
+import { InputBoxComponent } from "./components/form/InputBoxComponent";
+import { CheckboxComponent } from "./components/form/CheckboxComponent";
+
+import { ReverseArrayPipe } from "./pipes/array/ReverseArrayPipe";
+import { NetworkRequestHelper } from "./helpers/network/NetworkRequestHelper";
+import { ValidationHelper } from "./helpers/validation/ValidationHelper";
 
 @NgModule({
-	imports: [BrowserModule],
+	imports: [
+		HttpModule,
+		BrowserModule,
+		RouterModule.forRoot([{
+			path: "",
+			component: BlogListPageComponent
+		}, {
+			path: ":blog",
+			component: BlogPageComponent
+		}, {
+			path: ":blog/edit",
+			component: BlogEditPageComponent
+		}, {
+			path: "new/blog",
+			component: BlogEditPageComponent
+		}, {
+			path: "profile/login",
+			component: ProfileLoginComponent
+		}])
+	],
 	declarations: [
 		IndexPageComponent,
 		BlogPageComponent,
+		BlogEditPageComponent,
+		BlogListPageComponent,
 		NavigationBarComponent,
 		BlogListComponent,
 		BlogSearchComponent,
 		BlogContentComponent,
+		BlogEditorComponent,
 		ProfileSummaryComponent,
+		ProfileLoginComponent,
 		CommentBoxComponent,
 		CommentMessageComponent,
-		FooterComponent
+		InputBoxComponent,
+		CheckboxComponent,
+
+		ReverseArrayPipe
+	],
+	providers: [
+		{provide: APP_BASE_HREF, useValue : '/' }, 
+		NetworkRequestHelper,
+		ValidationHelper
 	],
 	bootstrap: [IndexPageComponent]
 })
