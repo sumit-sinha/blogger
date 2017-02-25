@@ -85,7 +85,7 @@ export class ValidationHelper {
 			}
 
 			if (status.valid === false) {
-				input.invalid = true;
+				status.message = validation.message;
 				break;
 			}
 		}

@@ -53,8 +53,8 @@ var ProfileLoginComponent = (function () {
                 url: "/profile/login",
                 method: "POST",
                 parameters: {
-                    param1: "somevalue",
-                    param2: "someothervalue"
+                    email: this.fields[0].input.value,
+                    password: this.fields[1].input.value
                 },
                 callback: {
                     success: this.onFormSubmissionSuccess,

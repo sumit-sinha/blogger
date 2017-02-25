@@ -44,7 +44,7 @@ var IndexPageComponent = (function () {
 IndexPageComponent = __decorate([
     core_1.Component({
         selector: "blog",
-        template: "\n\t    <navigation-bar [data]=\"data.global.header\"></navigation-bar>\n\t    <div class=\"container\">\n\t        <div class=\"row\">\n\t            <div class=\"col-lg-8\">\n\t            \t<router-outlet></router-outlet>\n\t            </div>\n\t            <div class=\"col-md-4\">\n\t                <blog-search [searchData]=\"data.search\"></blog-search>\n\t                <blog-list [blogList]=\"data.page.blogList\"></blog-list>\n\t                <profile-summary [profile]=\"data.global.profile\"></profile-summary>\n\t            </div>\n\t        </div>\n\t    </div>\n\t",
+        template: "\n\t    <navigation-bar [data]=\"data.global.header\"></navigation-bar>\n\t    <div class=\"container\">\n\t        <div class=\"row\">\n\t            <div class=\"col-lg-8\">\n\t            \t<router-outlet></router-outlet>\n\t            </div>\n\t            <div class=\"col-lg-4\">\n\t                <blog-search [searchData]=\"data.search\"></blog-search>\n\t                <blog-list [blogList]=\"data.page.blogList\"></blog-list>\n\t                <profile-summary [profile]=\"data.global.profile\"></profile-summary>\n\t            </div>\n\t        </div>\n\t    </div>\n\t",
         styles: [".container{margin-top: 60px;}"]
     }),
     __metadata("design:paramtypes", [router_1.Router])
