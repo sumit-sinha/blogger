@@ -4,6 +4,7 @@ const express = require("express"),
 	app = express(),
 	logger = require("./logger"),
 	bodyParser = require("body-parser"),
+	fs = require("fs"),
 	path = require("path"),
 	PropertiesReader = require("properties-reader"),
 	applicationUtil = require("./src/common/utility/ApplicationUtility")({
