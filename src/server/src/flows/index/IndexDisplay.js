@@ -13,6 +13,6 @@ module.exports = function(config) {
 		.get((request, response) => {
 			response.render("index", applicationUtil.processData({
 				blogList: [],
-			}, "index"));
+			}, "index", request));
 		});
 }

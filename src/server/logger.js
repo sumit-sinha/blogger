@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = function(request, response, next) {
 
 	var start = +new Date(), 
@@ -6,7 +8,13 @@ module.exports = function(request, response, next) {
 		stream = process.stdout;
 
 	response.on("finish", function() {
-		stream.write(url + "[" + method + "]: " + (+new Date() - start) + "ms\n");
+		let message = url + "[" + method + "]: " + (+new Date() - start) + "ms;";
+		if (request.session) {
+			message += request.session.id;
+		}
+
+		message += "\n";
+		stream.write(message);
 	});
 
 	next();

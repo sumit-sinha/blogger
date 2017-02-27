@@ -32,14 +32,16 @@ module.exports = function(args) {
 		 * function to create a common structure for data to be passed to UI
 		 * @param data {Object}
 		 * @param page {String}
+		 * @param request {Object}
 		 * @return {Object}
 		 */
-		processData: function(data, page) {
+		processData: function(data, page, request) {
 			let object = {data: {}};
 			object.data[page] = data;
 			
 			object.data.labels = labels.public;
 			object.data.global = {
+				profile: request.session.profile,
 				header: { title: settings.application_title }
 			}
 

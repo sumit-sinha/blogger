@@ -9,32 +9,35 @@ module.exports = function(config) {
 	let app = config.app,
 		applicationUtil = config.applicationUtil;
 
+	const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 	app.route("/profile/login")
 		.get((request, response) => {
 			response.render("index", applicationUtil.processData({
 					blogList: [],
-				}, "index"));
+				}, "index", request));
 		})
 		.post((request, response) => {
 
 			let labels = applicationUtil.getLabels(), 
-				settings = applicationUtil.getSettings(),
-
+				profile = applicationUtil.getSettings().profile,
 				email = request.body.email,
-				password = request.body.password,
-				emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+				password = request.body.password;
 
-			if (emailRegex.test(email) && password != null && password.trim() !== "") {
-				let profile = settings.profile;
-				if (profile.user_id === email && profile.password === password) {
-					response.send({
-						name: profile.name,
-						user: profile.user_id,
-						description: profile.description
-					});
+			if (emailRegex.test(email) 
+				&& password != null && password.trim() !== ""
+				&& (profile.user_id === email && profile.password === password)) {
+				
+				let filteredProfile = {
+					name: profile.name,
+					user: profile.user_id,
+					description: profile.description
+				};
 
-					return;
-				}
+				request.session.profile = filteredProfile;
+				response.send(filteredProfile);
+
+				return;
 			}
 
 			response.send({
