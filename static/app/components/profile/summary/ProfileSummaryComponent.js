@@ -22,7 +22,7 @@ __decorate([
 ProfileSummaryComponent = __decorate([
     core_1.Component({
         selector: "profile-summary",
-        template: "\n\t\t<div class=\"well\" *ngIf=\"profile\">\n\t\t\t<h4>Side Widget Well</h4>\n\t\t\t<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>\n\t\t</div>\n\t"
+        template: "\n\t\t<div class=\"well\" *ngIf=\"profile\">\n\t\t\t<h4>{{ profile.name }}</h4>\n\t\t\t<p>{{ profile.description }}</p>\n\t\t</div>\n\t"
     })
 ], ProfileSummaryComponent);
 exports.ProfileSummaryComponent = ProfileSummaryComponent;
