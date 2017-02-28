@@ -58,6 +58,18 @@ export class ApplicationDataHelper {
 	}
 
 	/**
+	 * function to set data inside cached data object
+	 * @param args {Object}
+	 */
+	setData(args: Object) {
+		if (args.type === "global") {
+			this.data.global[args.key] = args.data;
+		} else if (args.type === "page") {
+			this.data[args.page] = args.data;
+		}
+	}
+
+	/**
 	 * function to parse data from HTML
 	 * @return {Object}
 	 */

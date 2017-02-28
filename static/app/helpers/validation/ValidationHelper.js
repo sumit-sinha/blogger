@@ -27,8 +27,8 @@ var ValidationHelper = (function () {
                 status.valid = false;
                 break;
             }
-            if (field.input.invalid === false) {
-                status.valid = true;
+            if (field.input.invalid) {
+                status.valid = false;
                 status.messages.push(field.input.message);
                 break;
             }

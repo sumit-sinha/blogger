@@ -1,4 +1,6 @@
 import { Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
+import { LocalStorageHelper } from "../../../helpers/data/LocalStorageHelper";
 import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelper";
 import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHelper";
 import { ValidationType } from "../../../helpers/validation/ValidationType";
@@ -8,6 +10,9 @@ import { ValidationHelper } from "../../../helpers/validation/ValidationHelper";
 	selector: "profile-login",
 	template: `
 		<form class="form-signin" (submit)="onFormSubmission($event)">
+
+			<alert-message [message]="error"></alert-message>
+
 			<h2 class="form-signin-heading">{{ dataHelper.getLabel("tx_please_sign_in") }}</h2>
 			<input-box [data]="fields[0]"></input-box>
 			<input-box [data]="fields[1]"></input-box>
@@ -69,16 +74,25 @@ export class ProfileLoginComponent {
 
 	button: Object;
 
+	error: Object;
+
 	dataHelper: ApplicationDataHelper;
 
+	storageHelper: LocalStorageHelper;
+
 	constructor(private networkHelper: NetworkRequestHelper, 
-				private validator: ValidationHelper) {
+				private validator: ValidationHelper,
+				private router: Router) {
+
+		this.storageHelper = LocalStorageHelper.getInstance();
 		this.dataHelper = ApplicationDataHelper.getInstance();
+
 		this.fields = [{
 			label: { text: this.dataHelper.getLabel("tx_email_address") },
 			input: {
 				id: "user_name",
 				type: "email",
+				value: this.storageHelper.getData("user_name"),
 				autofocus: true,
 				placeholder: this.dataHelper.getLabel("tx_email_address"),
 				validations: [{ type: ValidationType.EMAIL }]
@@ -102,6 +116,11 @@ export class ProfileLoginComponent {
 			cssClass: "btn btn-lg btn-primary btn-block",
 			text: this.dataHelper.getLabel("tx_sign_in"),
 			loadingText: this.dataHelper.getLabel("tx_sign_in_loading")
+		}
+
+		this.error = {
+			show: false,
+			text: null
 		}
 	}
 
@@ -136,7 +155,13 @@ export class ProfileLoginComponent {
 					}
 				}
 			});
+
+			return;
 		}
+
+		this.showError({
+			text: this.dataHelper.getLabel("tx_sign_in_validation_error")
+		});
 	}
 
 	/**
@@ -145,7 +170,35 @@ export class ProfileLoginComponent {
 	 * @param args {Object}
 	 */
 	private onFormSubmissionSuccess(response, args) {
-		args.scope.button.loading = false;
+		
+		let scope = args.scope,
+			json = { user: null, error: null };
+
+		try { json = JSON.parse(response._body); } 
+		catch (e) { json.error = this.dataHelper.getLabel("tx_response_error") }
+
+		scope.button.loading = false;
+		if (json.user) {
+			scope.dataHelper.setData({
+				type: "global",
+				key: "profile",
+				data: json
+			});
+
+			if (scope.fields[2].input.value) {
+				scope.storageHelper.setData({
+					key: "user_name",
+					data: json.user
+				});
+			}
+
+			scope.router.navigateByUrl("/");
+			return;
+		}
+
+		scope.showError({
+			text: json.error
+		});
 	}
 
 	/**
@@ -154,6 +207,22 @@ export class ProfileLoginComponent {
 	 * @param args {Object}
 	 */
 	private onFormSubmissionError(error, args) {
-		args.scope.button.loading = false;
+
+		let scope = args.scope;
+
+		scope.button.loading = false;
+		scope.showError({
+			text: scope.dataHelper.getLabel("tx_network_error")
+		});
+	}
+
+	/**
+	 * function called to display error messages in UI
+	 * @param
+	 */
+	private showError(args: Object) {
+		this.error.text = args.text;
+		this.error.show = true;
+		this.error.type = "danger";
 	}
 }

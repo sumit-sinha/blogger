@@ -21,6 +21,7 @@ import { CommentMessageComponent } from "./components/comment/message/CommentMes
 import { InputBoxComponent } from "./components/form/InputBoxComponent";
 import { CheckboxComponent } from "./components/form/CheckboxComponent";
 import { LoadingButtonComponent } from "./components/form/LoadingButtonComponent";
+import { AlertMessageComponent } from "./components/message/AlertMessageComponent";
 
 import { ReverseArrayPipe } from "./pipes/array/ReverseArrayPipe";
 import { NetworkRequestHelper } from "./helpers/network/NetworkRequestHelper";
@@ -64,7 +65,8 @@ import { ValidationHelper } from "./helpers/validation/ValidationHelper";
 		InputBoxComponent,
 		CheckboxComponent,
 		LoadingButtonComponent,
-
+		AlertMessageComponent,
+		
 		ReverseArrayPipe
 	],
 	providers: [

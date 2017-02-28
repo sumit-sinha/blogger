@@ -14,22 +14,24 @@ var router_1 = require("@angular/router");
 var ApplicationDataHelper_1 = require("../../helpers/data/ApplicationDataHelper");
 var IndexPageComponent = (function () {
     function IndexPageComponent(router) {
+        var _this = this;
         this.router = router;
+        this.data = { global: {} };
         this.dataHelper = ApplicationDataHelper_1.ApplicationDataHelper.getInstance();
-        var indexPageData = this.dataHelper.getPageData("index");
-        this.data = {};
-        this.data.page = indexPageData;
-        this.data.global = {
-            header: this.dataHelper.getGlobalConfig("header"),
-            footer: this.dataHelper.getGlobalConfig("footer"),
-            profile: this.dataHelper.getGlobalConfig("profile")
-        };
-        if (this.data.global.header) {
-            this.data.global.header.callback = {
-                fn: this.onHeadClick,
-                args: { scope: this }
+        this.data.page = this.dataHelper.getPageData("index");
+        router.events.subscribe(function (val) {
+            _this.data.global = {
+                header: _this.dataHelper.getGlobalConfig("header"),
+                footer: _this.dataHelper.getGlobalConfig("footer"),
+                profile: _this.dataHelper.getGlobalConfig("profile")
             };
-        }
+            if (_this.data.global.header) {
+                _this.data.global.header.callback = {
+                    fn: _this.onHeadClick,
+                    args: { scope: _this }
+                };
+            }
+        });
     }
     /**
      * function called when title on header is clicked
@@ -45,7 +47,7 @@ IndexPageComponent = __decorate([
     core_1.Component({
         selector: "blog",
         template: "\n\t    <navigation-bar [data]=\"data.global.header\"></navigation-bar>\n\t    <div class=\"container\">\n\t        <div class=\"row\">\n\t            <div class=\"col-lg-8\">\n\t            \t<router-outlet></router-outlet>\n\t            </div>\n\t            <div class=\"col-lg-4\">\n\t                <blog-search [searchData]=\"data.search\"></blog-search>\n\t                <blog-list [blogList]=\"data.page.blogList\"></blog-list>\n\t                <profile-summary [profile]=\"data.global.profile\"></profile-summary>\n\t            </div>\n\t        </div>\n\t    </div>\n\t",
-        styles: [".container{margin-top: 60px;}"]
+        styles: ["\n\t\t.container{margin-top: 60px;}\n\t\t@media (max-width: 600px) {\n\t\t\t.col-lg-8 {\n\t\t\t\tmargin-bottom: 20px;\n\t\t\t}\n\t\t}\n\t"]
     }),
     __metadata("design:paramtypes", [router_1.Router])
 ], IndexPageComponent);

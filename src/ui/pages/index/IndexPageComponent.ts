@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { Router } from '@angular/router';
+import { Router } from "@angular/router";
 import { ApplicationDataHelper } from "../../helpers/data/ApplicationDataHelper";
 
 @Component({
@@ -19,7 +19,14 @@ import { ApplicationDataHelper } from "../../helpers/data/ApplicationDataHelper"
 	        </div>
 	    </div>
 	`,
-	styles: [".container{margin-top: 60px;}"]
+	styles: [`
+		.container{margin-top: 60px;}
+		@media (max-width: 600px) {
+			.col-lg-8 {
+				margin-bottom: 20px;
+			}
+		}
+	`]
 })
 
 export class IndexPageComponent {
@@ -29,23 +36,25 @@ export class IndexPageComponent {
 	private dataHelper: ApplicationDataHelper;
 
 	constructor(private router: Router) {
+
+		this.data = { global: {} };
 		this.dataHelper = ApplicationDataHelper.getInstance();
-		let indexPageData = this.dataHelper.getPageData("index");
+		this.data.page = this.dataHelper.getPageData("index");
 
-		this.data = {};
-		this.data.page = indexPageData;
-		this.data.global = {
-			header: this.dataHelper.getGlobalConfig("header"),
-			footer: this.dataHelper.getGlobalConfig("footer"),
-			profile: this.dataHelper.getGlobalConfig("profile")
-		}
-
-		if (this.data.global.header) {
-			this.data.global.header.callback = {
-				fn: this.onHeadClick,
-				args: { scope: this }
+		router.events.subscribe((val) => {
+			this.data.global = {
+				header: this.dataHelper.getGlobalConfig("header"),
+				footer: this.dataHelper.getGlobalConfig("footer"),
+				profile: this.dataHelper.getGlobalConfig("profile")
 			}
-		}
+
+			if (this.data.global.header) {
+				this.data.global.header.callback = {
+					fn: this.onHeadClick,
+					args: { scope: this }
+				}
+			}
+		});
 	}
 
 	/**

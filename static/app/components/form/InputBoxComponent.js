@@ -17,6 +17,9 @@ var InputBoxComponent = (function () {
     }
     InputBoxComponent.prototype.onInputBlur = function ($event) {
         var input = this.data.input;
+        if (input) {
+            input.value = $event.target.value;
+        }
         var status = this.validator.validateComponent(input);
         if (status.valid === false) {
             input.invalid = true;

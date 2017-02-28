@@ -23,10 +23,10 @@ export class ValidationHelper {
 				break;
 			}
 
-			if (field.input.invalid === false) {
-				 status.valid = true;
-				 status.messages.push(field.input.message);
-				 break;
+			if (field.input.invalid) {
+				status.valid = false;
+				status.messages.push(field.input.message);
+				break;
 			}
 
 			let fieldStatus = this.validateComponent(field.input);

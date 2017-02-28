@@ -26,7 +26,12 @@ export class InputBoxComponent {
 	constructor(private validator: ValidationHelper) {}
 
 	onInputBlur($event) {
+		
 		let input = this.data.input;
+		if (input) {
+			input.value = $event.target.value;
+		}
+
 		let status = this.validator.validateComponent(input);
 		if (status.valid === false) {
 			input.invalid = true;
