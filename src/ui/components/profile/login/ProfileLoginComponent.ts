@@ -12,7 +12,8 @@ import { ValidationHelper } from "../../../helpers/validation/ValidationHelper";
 			<input-box [data]="fields[0]"></input-box>
 			<input-box [data]="fields[1]"></input-box>
 			<check-box [data]="fields[2]"></check-box>
-			<button class="btn btn-lg btn-primary btn-block" type="submit">{{ dataHelper.getLabel("tx_sign_in") }}</button>
+
+			<loading-button [data]="button"></loading-button>
 		</form>
 	`,
 	styles: [`
@@ -66,6 +67,8 @@ export class ProfileLoginComponent {
 
 	fields: Array;
 
+	button: Object;
+
 	dataHelper: ApplicationDataHelper;
 
 	constructor(private networkHelper: NetworkRequestHelper, 
@@ -92,6 +95,14 @@ export class ProfileLoginComponent {
 			label: { text: this.dataHelper.getLabel("tx_remember_me") },
 			input: { }
 		}];
+
+		this.button = {
+			loading: false,
+			type: "submit",
+			cssClass: "btn btn-lg btn-primary btn-block",
+			text: this.dataHelper.getLabel("tx_sign_in"),
+			loadingText: this.dataHelper.getLabel("tx_sign_in_loading")
+		}
 	}
 
 	/**
@@ -104,6 +115,9 @@ export class ProfileLoginComponent {
 
 		let validationStatus = this.validator.validateForm(this.fields);
 		if (validationStatus.valid) {
+
+			this.button.loading = true;
+
 			this.networkHelper.request({
 				url: "/profile/login",
 				method: "POST",
@@ -112,18 +126,34 @@ export class ProfileLoginComponent {
 					password: this.fields[1].input.value
 				},
 				callback: {
-					success: this.onFormSubmissionSuccess,
-					error: this.onFormSubmissionError
+					success: {
+						fn: this.onFormSubmissionSuccess, 
+						args: {scope: this}
+					},
+					error: {
+						fn: this.onFormSubmissionError,
+						args: {scope: this}
+					}
 				}
 			});
 		}
 	}
 
-	private onFormSubmissionSuccess() {
-		console.log("success");
+	/**
+	 * function called when we get response for network submission
+	 * @param response {Object}
+	 * @param args {Object}
+	 */
+	private onFormSubmissionSuccess(response, args) {
+		args.scope.button.loading = false;
 	}
 
-	private onFormSubmissionError() {
-		console.log("error");
+	/**
+	 * function called when we get error for network submission
+	 * @param response {Object}
+	 * @param args {Object}
+	 */
+	private onFormSubmissionError(error, args) {
+		args.scope.button.loading = false;
 	}
 }

@@ -17,8 +17,10 @@ export class NetworkRequestHelper {
 
 		this.http.request(args.url, this.getRequestOptions(args))
 		.subscribe((response: Response) => {
-			args.callback.success(response);
-		})
+			args.callback.success.fn(response, args.callback.success.args);
+		}, (error: Response) => {
+			args.callback.error.fn(error, args.callback.error.args);
+		});
 	}
 
 	/**

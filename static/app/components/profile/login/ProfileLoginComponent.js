@@ -40,6 +40,13 @@ var ProfileLoginComponent = (function () {
                 label: { text: this.dataHelper.getLabel("tx_remember_me") },
                 input: {}
             }];
+        this.button = {
+            loading: false,
+            type: "submit",
+            cssClass: "btn btn-lg btn-primary btn-block",
+            text: this.dataHelper.getLabel("tx_sign_in"),
+            loadingText: this.dataHelper.getLabel("tx_sign_in_loading")
+        };
     }
     /**
      * function called on form submission
@@ -49,6 +56,7 @@ var ProfileLoginComponent = (function () {
         $event.preventDefault();
         var validationStatus = this.validator.validateForm(this.fields);
         if (validationStatus.valid) {
+            this.button.loading = true;
             this.networkHelper.request({
                 url: "/profile/login",
                 method: "POST",
@@ -57,17 +65,33 @@ var ProfileLoginComponent = (function () {
                     password: this.fields[1].input.value
                 },
                 callback: {
-                    success: this.onFormSubmissionSuccess,
-                    error: this.onFormSubmissionError
+                    success: {
+                        fn: this.onFormSubmissionSuccess,
+                        args: { scope: this }
+                    },
+                    error: {
+                        fn: this.onFormSubmissionError,
+                        args: { scope: this }
+                    }
                 }
             });
         }
     };
-    ProfileLoginComponent.prototype.onFormSubmissionSuccess = function () {
-        console.log("success");
+    /**
+     * function called when we get response for network submission
+     * @param response {Object}
+     * @param args {Object}
+     */
+    ProfileLoginComponent.prototype.onFormSubmissionSuccess = function (response, args) {
+        args.scope.button.loading = false;
     };
-    ProfileLoginComponent.prototype.onFormSubmissionError = function () {
-        console.log("error");
+    /**
+     * function called when we get error for network submission
+     * @param response {Object}
+     * @param args {Object}
+     */
+    ProfileLoginComponent.prototype.onFormSubmissionError = function (error, args) {
+        args.scope.button.loading = false;
     };
     return ProfileLoginComponent;
 }());
@@ -78,7 +102,7 @@ __decorate([
 ProfileLoginComponent = __decorate([
     core_1.Component({
         selector: "profile-login",
-        template: "\n\t\t<form class=\"form-signin\" (submit)=\"onFormSubmission($event)\">\n\t\t\t<h2 class=\"form-signin-heading\">{{ dataHelper.getLabel(\"tx_please_sign_in\") }}</h2>\n\t\t\t<input-box [data]=\"fields[0]\"></input-box>\n\t\t\t<input-box [data]=\"fields[1]\"></input-box>\n\t\t\t<check-box [data]=\"fields[2]\"></check-box>\n\t\t\t<button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\">{{ dataHelper.getLabel(\"tx_sign_in\") }}</button>\n\t\t</form>\n\t",
+        template: "\n\t\t<form class=\"form-signin\" (submit)=\"onFormSubmission($event)\">\n\t\t\t<h2 class=\"form-signin-heading\">{{ dataHelper.getLabel(\"tx_please_sign_in\") }}</h2>\n\t\t\t<input-box [data]=\"fields[0]\"></input-box>\n\t\t\t<input-box [data]=\"fields[1]\"></input-box>\n\t\t\t<check-box [data]=\"fields[2]\"></check-box>\n\n\t\t\t<loading-button [data]=\"button\"></loading-button>\n\t\t</form>\n\t",
         styles: ["\n\t\t.form-signin {\n\t\t\tmax-width: 330px;\n\t\t\tpadding: 15px;\n\t\t\tmargin: 0 auto;\n\t\t}\n\t\t.form-signin .form-signin-heading,\n\t\t.form-signin .checkbox {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\t\t.form-signin .checkbox {\n\t\t\tfont-weight: normal;\n\t\t}\n\t\t.form-signin >>> .form-control {\n\t\t\tposition: relative;\n\t\t\theight: auto;\n\t\t\t-webkit-box-sizing: border-box;\n\t\t\t-moz-box-sizing: border-box;\n\t\t\tbox-sizing: border-box;\n\t\t\tpadding: 10px;\n\t\t\tfont-size: 16px;\n\t\t}\n\t\t.form-signin >>> .form-control:focus {\n\t\t\tz-index: 2;\n\t\t}\n\t\t.form-signin >>> input[type=\"email\"] {\n\t\t\tmargin-bottom: -1px;\n\t\t\tborder-bottom-right-radius: 0;\n\t\t\tborder-bottom-left-radius: 0;\n\t\t}\n\t\t.form-signin >>> input[type=\"password\"] {\n\t\t\tmargin-bottom: 10px;\n\t\t\tborder-top-left-radius: 0;\n\t\t\tborder-top-right-radius: 0;\n\t\t}\n\n\t\t@media (max-width: 600px) {\n\t\t\t.form-signin {\n\t\t\t\tmax-width: 600px;\n\t\t\t}\n\t\t}\n\t"]
     }),
     __metadata("design:paramtypes", [NetworkRequestHelper_1.NetworkRequestHelper,

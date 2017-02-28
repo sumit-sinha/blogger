@@ -27,6 +27,7 @@ var CommentBoxComponent_1 = require("./components/comment/box/CommentBoxComponen
 var CommentMessageComponent_1 = require("./components/comment/message/CommentMessageComponent");
 var InputBoxComponent_1 = require("./components/form/InputBoxComponent");
 var CheckboxComponent_1 = require("./components/form/CheckboxComponent");
+var LoadingButtonComponent_1 = require("./components/form/LoadingButtonComponent");
 var ReverseArrayPipe_1 = require("./pipes/array/ReverseArrayPipe");
 var NetworkRequestHelper_1 = require("./helpers/network/NetworkRequestHelper");
 var ValidationHelper_1 = require("./helpers/validation/ValidationHelper");
@@ -73,6 +74,7 @@ AppModule = __decorate([
             CommentMessageComponent_1.CommentMessageComponent,
             InputBoxComponent_1.InputBoxComponent,
             CheckboxComponent_1.CheckboxComponent,
+            LoadingButtonComponent_1.LoadingButtonComponent,
             ReverseArrayPipe_1.ReverseArrayPipe
         ],
         providers: [

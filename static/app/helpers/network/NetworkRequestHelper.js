@@ -24,7 +24,9 @@ var NetworkRequestHelper = (function () {
     NetworkRequestHelper.prototype.request = function (args) {
         this.http.request(args.url, this.getRequestOptions(args))
             .subscribe(function (response) {
-            args.callback.success(response);
+            args.callback.success.fn(response, args.callback.success.args);
+        }, function (error) {
+            args.callback.error.fn(error, args.callback.error.args);
         });
     };
     /**
