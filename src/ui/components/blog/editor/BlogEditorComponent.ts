@@ -19,8 +19,11 @@ export class BlogEditorComponent implements AfterViewInit, OnDestroy {
   @Input() 
   elementId: String;
 
-  @Output() 
+  @Output()
   onEditorKeyup = new EventEmitter<any>();
+
+  @Output()
+  onEditorInit = new EventEmitter<any>();
 
   editor: Object;
 
@@ -48,6 +51,10 @@ export class BlogEditorComponent implements AfterViewInit, OnDestroy {
         editor.on("keyup", () => {
           const content = editor.getContent();
           this.onEditorKeyup.emit(content);
+        });
+
+        editor.on("init", () => {
+          this.onEditorInit.emit(editor);
         });
       }
     });

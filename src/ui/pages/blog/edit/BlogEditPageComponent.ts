@@ -10,11 +10,12 @@ import { Component } from "@angular/core";
 			</div>
 			<blog-editor
 				[elementId]="'blog-editor'"
-				(onEditorKeyup)="keyupHandlerFunction($event)" 
+				(onEditorInit)="editorInitFunction($event)" 
+				(onEditorKeyup)="keyupHandlerFunction()" 
 				[hidden]="preview.enabled"
 			></blog-editor>
 			
-			<div class="btn-container">
+			<div class="btn-container" *ngIf="ready">
 				<button type="button" class="btn btn-success" (click)="onSaveClick()">Save</button>
 				<button type="button" class="btn btn-primary" (click)="onPreviewClick()">Preview</button>
 				<button type="button" class="btn btn-danger" (click)="onCancelClick()">Cancel</button>
@@ -24,13 +25,25 @@ import { Component } from "@angular/core";
 	styles: [`
 		button{width: 100px;}
 		.container{margin-top: 60px;}
-		.btn-container{text-align:right;margin-top:10px}
+		.btn-container{
+			background: #F8F8F8;
+    		height: 60px;
+    		padding-top: 12px;
+    		padding-right: 10px;
+    		margin-bottom: 20px;
+			text-align:right;
+			margin-top:10px
+		}
 	`]
 })
 
 export class BlogEditPageComponent {
 
+	ready: Boolean;
+
 	preview: Object;
+
+	editor: any;
 
 	constructor() {
 		this.preview = { enabled: false, content: null };
@@ -45,6 +58,15 @@ export class BlogEditPageComponent {
 	}
 
 	/**
+	 * function called when editor is initialized
+	 * @param editor {TinyMce} editor instance
+	 */
+	editorInitFunction(editor) {
+		this.ready = true;
+		this.editor = editor;
+	}
+
+	/**
 	 * function called when save button is clicked
 	 */
 	onSaveClick() {
@@ -56,7 +78,7 @@ export class BlogEditPageComponent {
 	 */
 	onPreviewClick() {
 		this.preview.enabled = true;
-		this.preview.content = tinyMCE.activeEditor.getContent();
+		this.preview.content = this.editor.getContent();
 	}
 
 	/**
