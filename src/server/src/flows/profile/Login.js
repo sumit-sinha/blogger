@@ -27,15 +27,11 @@ module.exports = function(config) {
 			if (emailRegex.test(email) 
 				&& password != null && password.trim() !== ""
 				&& (profile.user_id === email && profile.password === password)) {
-				
-				let filteredProfile = {
-					name: profile.name,
-					user: profile.user_id,
-					description: profile.description
-				};
 
-				request.session.profile = filteredProfile;
-				response.send(filteredProfile);
+				request.session.logged_in = true;
+				response.send({
+					logged_in: true
+				});
 
 				return;
 			}

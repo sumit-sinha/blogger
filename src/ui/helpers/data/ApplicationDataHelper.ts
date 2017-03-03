@@ -6,6 +6,10 @@ export class ApplicationDataHelper {
 
 	private data: Object;
 
+	private globalDataEvents: Array;
+
+	private pageDataEvents: Array;
+
 	private static instance: ApplicationDataHelper;
 
 	/**
@@ -18,6 +22,8 @@ export class ApplicationDataHelper {
 	}
 
 	constructor() {
+		this.pageDataEvents = [];
+		this.globalDataEvents = [];
 		this.data = this.parseData();
 	}
 
@@ -64,8 +70,32 @@ export class ApplicationDataHelper {
 	setData(args: Object) {
 		if (args.type === "global") {
 			this.data.global[args.key] = args.data;
+			for (let i = 0, length = this.globalDataEvents.length; i < length; i++) {
+				let callback = this.globalDataEvents[i];
+				if (callback && typeof callback.fn === "function") {
+					callback.fn(this.data.global, callback.args);
+				}
+			}
 		} else if (args.type === "page") {
 			this.data[args.page] = args.data;
+			for (let i = 0, length = this.pageDataEvents.length; i < length; i++) {
+				let callback = this.pageDataEvents[i];
+				if (callback && args.page === callback.page && typeof callback.fn === "function") {
+					callback.fn(this.data[args.page], callback.args);
+				}
+			}
+		}
+	}
+
+	/**
+	 * function to get an event call whenever there is change in data
+	 * @param args {Object}
+	 */
+	subscribeDataChange(args: Object) {
+		if (args.type === "global") {
+			this.globalDataEvents.push(args.callback);
+		} else if (args.type === "page") {
+			this.pageDataEvents.push(args.callback);
 		}
 	}
 

@@ -8,7 +8,7 @@ import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 import { IndexPageComponent } from "./pages/index/IndexPageComponent";
 import { BlogPageComponent } from "./pages/blog/display/BlogPageComponent";
 import { BlogEditPageComponent } from "./pages/blog/edit/BlogEditPageComponent";
-import { BlogListPageComponent } from "./pages/blog/list/BlogListPageComponent";
+import { ProfilePageComponent } from "./pages/profile/ProfilePageComponent";
 import { NavigationBarComponent } from "./components/navigation/NavigationBarComponent";
 import { BlogListComponent } from "./components/blog/list/BlogListComponent";
 import { BlogSearchComponent } from "./components/blog/search/BlogSearchComponent";
@@ -33,7 +33,7 @@ import { ValidationHelper } from "./helpers/validation/ValidationHelper";
 		BrowserModule,
 		RouterModule.forRoot([{
 			path: "",
-			component: BlogListPageComponent
+			component: ProfilePageComponent
 		}, {
 			path: ":blog",
 			component: BlogPageComponent
@@ -52,7 +52,7 @@ import { ValidationHelper } from "./helpers/validation/ValidationHelper";
 		IndexPageComponent,
 		BlogPageComponent,
 		BlogEditPageComponent,
-		BlogListPageComponent,
+		ProfilePageComponent,
 		NavigationBarComponent,
 		BlogListComponent,
 		BlogSearchComponent,

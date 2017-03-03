@@ -172,23 +172,23 @@ export class ProfileLoginComponent {
 	private onFormSubmissionSuccess(response, args) {
 		
 		let scope = args.scope,
-			json = { user: null, error: null };
+			json = { logged_in: false, error: null };
 
 		try { json = JSON.parse(response._body); } 
 		catch (e) { json.error = this.dataHelper.getLabel("tx_response_error") }
 
 		scope.button.loading = false;
-		if (json.user) {
+		if (json.logged_in) {
 			scope.dataHelper.setData({
 				type: "global",
-				key: "profile",
-				data: json
+				key: "logged_in",
+				data: json.logged_in
 			});
 
 			if (scope.fields[2].input.value) {
 				scope.storageHelper.setData({
 					key: "user_name",
-					data: json.user
+					data: scope.fields[0].input.value
 				});
 			}
 

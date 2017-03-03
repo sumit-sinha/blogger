@@ -9,10 +9,12 @@ import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelp
 			<div class="row">
 				<div class="col-lg-12">
 					<ul class="list-unstyled">
-						<li *ngFor="let item of blogList.items">
-							<a href="{{ item.link }}">{{ item.title }}</a>
-						</li>
-						<li *ngIf="blogList.items == null || blogList.items?.length == 0">
+						<ng-container *ngIf="blogList && blogList.items && blogList.items?.length > 0">
+							<li *ngFor="let item of blogList.items">
+								<a href="{{ item.link }}">{{ item.title }}</a>
+							</li>
+						</ng-container>
+						<li *ngIf="blogList == null || blogList.items == null || blogList.items?.length == 0">
 							{{ dataHelper.getLabel("tx_blog_list_zero") }}
 						</li>
 					</ul>

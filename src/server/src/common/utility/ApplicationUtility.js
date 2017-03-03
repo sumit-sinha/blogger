@@ -41,7 +41,7 @@ module.exports = function(args) {
 			
 			object.data.labels = labels.public;
 			object.data.global = {
-				profile: request.session.profile,
+				profile: settings.profile,
 				header: { title: settings.application_title }
 			}
 
@@ -79,6 +79,20 @@ module.exports = function(args) {
 				}
 
 				if (keys[0] === "profile") {
+					if (keys[1] === "links") {
+
+						let values = value.split("|");
+
+						value = [];
+						for (let i = 0, length = values.length; i < length; i++) {
+							let link = values[i].split("---");
+							value.push({
+								type: link[0],
+								url: link[1]
+							});
+						}
+					}
+
 					settings.profile[keys[1]] = value;
 				} else {
 					settings[keys[1]] = value;

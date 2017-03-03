@@ -5,7 +5,7 @@ import { ApplicationDataHelper } from "../../helpers/data/ApplicationDataHelper"
 @Component({
 	selector: "blog",
 	template: `
-	    <navigation-bar [data]="data.global.header"></navigation-bar>
+	    <navigation-bar [data]="data.header"></navigation-bar>
 	    <div class="container">
 	        <div class="row">
 	            <div class="col-lg-8">
@@ -13,8 +13,8 @@ import { ApplicationDataHelper } from "../../helpers/data/ApplicationDataHelper"
 	            </div>
 	            <div class="col-lg-4">
 	                <blog-search [searchData]="data.search"></blog-search>
-	                <blog-list [blogList]="data.page.blogList"></blog-list>
-	                <profile-summary [profile]="data.global.profile"></profile-summary>
+	                <blog-list [blogList]="data.blogs"></blog-list>
+	                <profile-summary [profile]="data.profile"></profile-summary>
 	            </div>
 	        </div>
 	    </div>
@@ -33,36 +33,60 @@ export class IndexPageComponent {
 
 	data: Object;
 
-	private dataHelper: ApplicationDataHelper;
-
 	constructor(private router: Router) {
 
-		this.data = { global: {} };
-		this.dataHelper = ApplicationDataHelper.getInstance();
-		this.data.page = this.dataHelper.getPageData("index");
+		this.data = { };
+		let dataHelper = ApplicationDataHelper.getInstance();
 
-		router.events.subscribe((val) => {
-			this.data.global = {
-				header: this.dataHelper.getGlobalConfig("header"),
-				footer: this.dataHelper.getGlobalConfig("footer"),
-				profile: this.dataHelper.getGlobalConfig("profile")
-			}
-
-			if (this.data.global.header) {
-				this.data.global.header.callback = {
-					fn: this.onHeadClick,
-					args: { scope: this }
+		dataHelper.subscribeDataChange({
+			type: "page",
+			callback: {
+				page: "index",
+				fn: (data, args) => {			
+					this.data = dataHelper.getPageData("index");
+					this.setupHeader(dataHelper);
 				}
 			}
 		});
 	}
 
 	/**
-	 * function called when title on header is clicked
+	 * function to setup header data
+	 * @param dataHelper {ApplicationDataHelper}
+	 */
+	private setupHeader(dataHelper: ApplicationDataHelper) {
+		if (this.data.header == null) {
+			return;
+		}
+
+		this.data.header.callback = {
+			fn: this.doNavigate,
+			args: {
+				url: "/",
+				scope: this
+			}
+		};
+
+		let isLoggedIn = dataHelper.getGlobalConfig("logged_in");
+		if (isLoggedIn) {
+			this.data.header.button = {};
+			this.data.header.button.title = dataHelper.getLabel("tx_new_blog");
+			this.data.header.button.callback = {
+				fn: this.doNavigate,
+				args: {
+					url: "/new/blog",
+					scope: this
+				}
+			};
+		}
+	}
+
+	/**
+	 * function called when a button on header is clicked
 	 * @param $event
 	 * @param args
 	 */ 
-	private onHeadClick($event, args) {
-		args.scope.router.navigateByUrl("/");
+	private doNavigate($event, args) {
+		args.scope.router.navigateByUrl(args.url);
 	}
 }
