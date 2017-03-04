@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelper";
 
 @Component({
 	selector: "blog-edit",
@@ -46,7 +47,19 @@ export class BlogEditPageComponent {
 	editor: any;
 
 	constructor() {
+
+		let dataHelper = ApplicationDataHelper.getInstance();
+
 		this.preview = { enabled: false, content: null };
+		dataHelper.setData({
+			type: "page",
+			page: "index",
+			data: {
+				profile: dataHelper.getGlobalConfig("profile"),
+				blogs: dataHelper.getGlobalConfig("blogs"),
+				header: dataHelper.getGlobalConfig("header")
+			}
+		});
 	}
 
 	/**

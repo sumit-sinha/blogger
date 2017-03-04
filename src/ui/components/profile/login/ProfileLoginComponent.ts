@@ -122,6 +122,16 @@ export class ProfileLoginComponent {
 			show: false,
 			text: null
 		}
+
+		this.dataHelper.setData({
+			type: "page",
+			page: "index",
+			data: {
+				profile: this.dataHelper.getGlobalConfig("profile"),
+				blogs: this.dataHelper.getGlobalConfig("blogs"),
+				header: this.dataHelper.getGlobalConfig("header")
+			}
+		});
 	}
 
 	/**

@@ -23,6 +23,7 @@ import { CheckboxComponent } from "./components/form/CheckboxComponent";
 import { LoadingButtonComponent } from "./components/form/LoadingButtonComponent";
 import { AlertMessageComponent } from "./components/message/AlertMessageComponent";
 
+import { TrimStringPipe } from "./pipes/string/TrimStringPipe";
 import { ReverseArrayPipe } from "./pipes/array/ReverseArrayPipe";
 import { NetworkRequestHelper } from "./helpers/network/NetworkRequestHelper";
 import { ValidationHelper } from "./helpers/validation/ValidationHelper";
@@ -67,6 +68,7 @@ import { ValidationHelper } from "./helpers/validation/ValidationHelper";
 		LoadingButtonComponent,
 		AlertMessageComponent,
 		
+		TrimStringPipe,
 		ReverseArrayPipe
 	],
 	providers: [
