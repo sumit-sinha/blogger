@@ -27,7 +27,7 @@ import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelp
 	`,
 	styles: [`
 		button{width: 100px;}
-		.container{margin-top: 60px;margin-bottom:60px;}
+		form{margin-bottom:60px;}
 		.btn-container{
 			background: rgba(35, 35, 35, 0.83);
 			height: 50px;

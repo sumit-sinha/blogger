@@ -7,7 +7,7 @@
 module.exports = function(args) {
 
 	let labels = {public: {}, system: {}}, 
-		settings = {profile: {}},
+		settings = {},
 		languageProperty = args.languageProperty, 
 		applicationPropery = args.applicationPropery;
 
@@ -16,7 +16,7 @@ module.exports = function(args) {
 	 * @param key {String}
 	 * @return {Array}
 	 */
-	var getKeyArray = function(key) {
+	let getKeyArray = function(key) {
 		let keys = null;
 		if (key.indexOf(".") === -1) {
 			keys = ["", key];
@@ -26,6 +26,27 @@ module.exports = function(args) {
 
 		return keys;
 	};
+
+	/**
+	 * function to parse data to to get a list of profiles
+	 * @param data {String}
+	 * @return {Array}
+	 */
+	let getProfileLinks = function(data) {
+
+		let list = [];
+		let values = data.split("|");
+
+		for (let i = 0, length = values.length; i < length; i++) {
+			let link = values[i].split("---");
+			list.push({
+				type: link[0],
+				url: link[1]
+			});
+		}
+
+		return list;
+	}
 
 	return {
 		/**
@@ -64,6 +85,8 @@ module.exports = function(args) {
 					labels[keys[1]] = value;
 				}
 			});
+
+			return labels;
 		},
 		/**
 		 * function to read all the settings from properties
@@ -73,33 +96,25 @@ module.exports = function(args) {
 			applicationPropery.each((key, value) => {
 
 				let keys = getKeyArray(key);
-				if (key.indexOf(".") === -1) {
-					keys = ["", key];
+				if (keys[0] === "") {
+					settings[keys[1]] = value;
 				} else {
-					keys = key.split(".");
-				}
 
-				if (keys[0] === "profile") {
-					if (keys[1] === "links") {
-
-						let values = value.split("|");
-
-						value = [];
-						for (let i = 0, length = values.length; i < length; i++) {
-							let link = values[i].split("---");
-							value.push({
-								type: link[0],
-								url: link[1]
-							});
-						}
+					if (keys[0] === "profile" && keys[1] === "links") {
+						value = getProfileLinks(value);
 					}
 
-					settings.profile[keys[1]] = value;
-				} else {
-					settings[keys[1]] = value;
+					if (settings[keys[0]] == null) {
+						settings[keys[0]] = {};
+					}
+
+					settings[keys[0]][keys[1]] = value;
 				}
 			});
+
+			return settings;
 		},
+
 		/**
 		 * get all the labels
 		 * @return {Object}
@@ -107,6 +122,7 @@ module.exports = function(args) {
 		getLabels: function() {
 			return labels;
 		},
+
 		/**
 		 * get all the settings
 		 * @return {Object}
