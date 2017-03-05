@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelper";
+import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHelper";
 
 @Component({
 	selector: "blog-edit",
@@ -52,6 +53,9 @@ import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelp
 			background: url(/images/gears.gif) no-repeat center;
 			background-color: rgba(30, 31, 31, 0.85);
 		}
+		@media (max-width: 600px) {
+			form{margin-bottom:20px;}
+		}
 	`]
 })
 
@@ -65,7 +69,7 @@ export class BlogEditPageComponent {
 
 	dataHelper: ApplicationDataHelper;
 
-	constructor() {
+	constructor(private networkHelper: NetworkRequestHelper) {
 
 		this.dataHelper = ApplicationDataHelper.getInstance();
 
@@ -108,6 +112,31 @@ export class BlogEditPageComponent {
 	 */
 	onSaveClick() {
 
+		let content = null;
+		if (this.preview.enabled) {
+			content = this.preview.content;
+		} else {
+			content = this.editor.getContent();
+		}
+
+		this.networkHelper.request({
+			url: "/new/blog",
+			method: "POST",
+			parameters: {
+				content: content,
+				title: this.getContentTitle(content)
+			},
+			callback: {
+				success: {
+					fn: this.onSaveCallback, 
+					args: {scope: this}
+				},
+				error: {
+					fn: this.onSaveErrorCallback,
+					args: {scope: this}
+				}
+			}
+		});
 	}
 
 	/**
@@ -132,5 +161,50 @@ export class BlogEditPageComponent {
 	 */
 	onCancelClick() {
 		history.go(-1);
+	}
+
+	/**
+	 * function called when save is success
+	 * @param response {Object}
+	 * @param args {Object}
+	 */
+	private onSaveCallback(response, args) {
+		console.log("success");
+	}
+
+	/**
+	 * function called when save has failed
+	 * @param response {Object}
+	 * @param args {Object}
+	 */
+	private onSaveErrorCallback(response, args) {
+		console.log("error");
+	}
+
+	/**
+	 * function to generate a random title for application
+	 * @param content {String}
+	 */
+	private getContentTitle(content: String): String {
+		let firstLine = this.trimHTMLTags(content.substring(0, content.indexOf("\n")));
+		return firstLine.substring(0, 25).replace(" ", "_").toLowerCase();
+	}
+
+	/**
+	 * function to replace all the HTML tags from string
+	 * @param content {String}
+	 * @return {String}
+	 */
+	private trimHTMLTags(content: String): String {
+
+		if (content == null) {
+			return "";
+		}
+
+		return content.replace(/<[^>]*>/ig, ' ')
+					.replace(/<\/[^>]*>/ig, ' ')
+					.replace(/&nbsp;|&#160;/gi, ' ')
+					.replace(/\s+/ig, ' ')
+					.trim();
 	}
 }

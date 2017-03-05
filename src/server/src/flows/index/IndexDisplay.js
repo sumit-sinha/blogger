@@ -6,13 +6,19 @@
  */
 module.exports = function(config) {
 
-	let app = config.app, 
+	let app = config.app,
+		database = config.database,
 		applicationUtil = config.applicationUtil;
 	
 	app.route("/")
 		.get((request, response) => {
-			response.render("index", applicationUtil.processData({
-				blogList: [],
-			}, "index", request));
+
+			database.collection("blogs").find().toArray(function (err, result) {
+				
+				if (err) { throw err; }
+				response.render("index", applicationUtil.processData({
+					blogList: blogs,
+				}, "index", request));
+			});
 		});
 }

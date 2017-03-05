@@ -49,5 +49,8 @@ module.exports = function(config) {
 			response.render("index", applicationUtil.processData({
 					blogList: [],
 				}, "index", request));
+		})
+		.post((request, response) => {
+			response.send({ called: true });
 		});
 }
