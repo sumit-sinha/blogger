@@ -37,8 +37,9 @@ app.use(session({
 }));
 
 app.set('view engine', 'pug');
-app.listen(3000, () => {
-	console.log("running server on port 3000");
+app.listen(settings.server_port, () => {
+	console.log("running server on port " + settings.server_port);
+	console.log("access content using URL: http://127.0.0.1:" + settings.server_port + "/");
 });
 
 require("./src/flows/index/IndexDisplay")(config);

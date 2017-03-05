@@ -21,19 +21,36 @@ import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelp
 				<button type="button" class="btn btn-primary" (click)="onPreviewClick()">Preview</button>
 				<button type="button" class="btn btn-danger" (click)="onCancelClick()">Cancel</button>
 			</div>
+
+			<div *ngIf="!ready" class="msk loading"></div>
 		</form>
 	`,
 	styles: [`
 		button{width: 100px;}
-		.container{margin-top: 60px;}
+		.container{margin-top: 60px;margin-bottom:60px;}
 		.btn-container{
-			background: #F8F8F8;
-    		height: 60px;
-    		padding-top: 12px;
-    		padding-right: 10px;
-    		margin-bottom: 20px;
-			text-align:right;
-			margin-top:10px
+			background: rgba(35, 35, 35, 0.83);
+			height: 50px;
+			padding-top: 8px;
+			padding-bottom: 5px;
+			padding-right: 10px;
+			text-align: right;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			z-index: 9;
+		}
+		.msk {
+			position: fixed;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 100%;
+			z-index: 10;
+			background: url(/images/gears.gif) no-repeat center;
+			background-color: rgba(30, 31, 31, 0.85);
 		}
 	`]
 })

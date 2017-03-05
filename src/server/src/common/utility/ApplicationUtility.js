@@ -42,6 +42,7 @@ module.exports = function(args) {
 			object.data.labels = labels.public;
 			object.data.global = {
 				profile: settings.profile,
+				logged_in: request.session.logged_in,
 				header: { title: settings.application_title }
 			}
 
