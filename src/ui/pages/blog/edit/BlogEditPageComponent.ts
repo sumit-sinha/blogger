@@ -17,9 +17,9 @@ import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelp
 			></blog-editor>
 			
 			<div class="btn-container" *ngIf="ready">
-				<button type="button" class="btn btn-success" (click)="onSaveClick()">Save</button>
-				<button type="button" class="btn btn-primary" (click)="onPreviewClick()">Preview</button>
-				<button type="button" class="btn btn-danger" (click)="onCancelClick()">Cancel</button>
+				<button type="button" class="btn btn-success" (click)="onSaveClick()">{{ dataHelper.getLabel("tx_button_save") }}</button>
+				<button type="button" class="btn btn-primary" (click)="onPreviewClick()">{{ preview.label }}</button>
+				<button type="button" class="btn btn-danger" (click)="onCancelClick()">{{ dataHelper.getLabel("tx_button_cancel") }}</button>
 			</div>
 
 			<div *ngIf="!ready" class="msk loading"></div>
@@ -63,18 +63,25 @@ export class BlogEditPageComponent {
 
 	editor: any;
 
+	dataHelper: ApplicationDataHelper;
+
 	constructor() {
 
-		let dataHelper = ApplicationDataHelper.getInstance();
+		this.dataHelper = ApplicationDataHelper.getInstance();
 
-		this.preview = { enabled: false, content: null };
-		dataHelper.setData({
+		this.preview = { 
+			enabled: false, 
+			content: null,
+			label: this.dataHelper.getLabel("tx_button_preview")
+		};
+
+		this.dataHelper.setData({
 			type: "page",
 			page: "index",
 			data: {
-				profile: dataHelper.getGlobalConfig("profile"),
-				blogs: dataHelper.getGlobalConfig("blogs"),
-				header: dataHelper.getGlobalConfig("header")
+				profile: this.dataHelper.getGlobalConfig("profile"),
+				blogs: this.dataHelper.getGlobalConfig("blogs"),
+				header: this.dataHelper.getGlobalConfig("header")
 			}
 		});
 	}
@@ -107,7 +114,16 @@ export class BlogEditPageComponent {
 	 * function called when preview button is clicked
 	 */
 	onPreviewClick() {
+
+		if (this.preview.enabled) {
+			this.preview.enabled = false;
+			this.editor.setContent(this.preview.content);
+			this.preview.label = this.dataHelper.getLabel("tx_button_preview");
+			return;
+		}
+
 		this.preview.enabled = true;
+		this.preview.label = this.dataHelper.getLabel("tx_button_edit");
 		this.preview.content = this.editor.getContent();
 	}
 
