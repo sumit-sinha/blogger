@@ -73,18 +73,22 @@ module.exports = function(config) {
 				return;
 			}
 
-			let errors = [];
-			if (request.body.type !== 0 && request.body.type !== 1) {
+			let errors = [],
+				type = request.body.type,
+				content = request.body.content,
+				title = request.body.title;
+
+			if (type !== "0" && type !== "1") {
 				errors.push(labels.system.tx_save_wrong_type_error);
 			}
 
-			if (request.body.content == null || request.body.content.trim() === "") {
+			if (content == null || content.trim() === "") {
 				errors.push(labels.system.tx_save_empty_content_error);
 			}
 
-			if (request.body.title == null || request.body.title.trim() === "") {
+			if (title == null || title.trim() === "") {
 				errors.push(labels.system.tx_save_empty_title_error);
-			} else if (isExistingTitle(request.body.title)) {
+			} else if (isExistingTitle(title)) {
 				errors.push(labels.system.tx_save_existing_title_error);
 			}
 

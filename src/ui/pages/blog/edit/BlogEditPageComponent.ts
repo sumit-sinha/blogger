@@ -193,13 +193,14 @@ export class BlogEditPageComponent {
 			return "";
 		}
 
-		let newLineIndex = content.indexOf("\n");
+		let contentWithoutHTML = this.trimHTMLTags(content);
+		let newLineIndex = contentWithoutHTML.indexOf("\n");
 		if (newLineIndex === -1) {
-			newLineIndex = content.length - 1;
+			newLineIndex = contentWithoutHTML.length;
 		}
 
-		let firstLine = this.trimHTMLTags(content.substring(0, newLineIndex));
-		return firstLine.substring(0, 25).replace(" ", "_").toLowerCase();
+		let firstLine = contentWithoutHTML.substring(0, newLineIndex);
+		return firstLine.replace(" ", "_").toLowerCase();
 	}
 
 	/**
