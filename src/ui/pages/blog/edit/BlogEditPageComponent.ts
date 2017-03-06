@@ -18,9 +18,9 @@ import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHel
 			></blog-editor>
 			
 			<div class="btn-container" *ngIf="ready">
-				<button type="button" class="btn btn-success" (click)="onSaveClick()">{{ dataHelper.getLabel("tx_button_save") }}</button>
+				<button type="button" class="btn btn-success" (click)="onSaveClick($event, 0)">{{ dataHelper.getLabel("tx_button_save") }}</button>
+				<button type="button" class="btn btn-info" (click)="onSaveClick($event, 1)">{{ dataHelper.getLabel("tx_button_save_draft") }}</button>
 				<button type="button" class="btn btn-primary" (click)="onPreviewClick()">{{ preview.label }}</button>
-				<button type="button" class="btn btn-danger" (click)="onCancelClick()">{{ dataHelper.getLabel("tx_button_cancel") }}</button>
 			</div>
 
 			<div *ngIf="!ready" class="msk loading"></div>
@@ -109,8 +109,10 @@ export class BlogEditPageComponent {
 
 	/**
 	 * function called when save button is clicked
+	 * @param $event {Object}
+	 * @param type {Number}
 	 */
-	onSaveClick() {
+	onSaveClick($event, type) {
 
 		let content = null;
 		if (this.preview.enabled) {
@@ -123,17 +125,24 @@ export class BlogEditPageComponent {
 			url: "/new/blog",
 			method: "POST",
 			parameters: {
+				type: type,
 				content: content,
 				title: this.getContentTitle(content)
 			},
 			callback: {
 				success: {
 					fn: this.onSaveCallback, 
-					args: {scope: this}
+					args: {
+						scope: this,
+						type: type
+					}
 				},
 				error: {
 					fn: this.onSaveErrorCallback,
-					args: {scope: this}
+					args: {
+						scope: this,
+						type: type
+					}
 				}
 			}
 		});
@@ -154,13 +163,6 @@ export class BlogEditPageComponent {
 		this.preview.enabled = true;
 		this.preview.label = this.dataHelper.getLabel("tx_button_edit");
 		this.preview.content = this.editor.getContent();
-	}
-
-	/**
-	 * function called when cancel button is clicked
-	 */
-	onCancelClick() {
-		history.go(-1);
 	}
 
 	/**
@@ -186,7 +188,17 @@ export class BlogEditPageComponent {
 	 * @param content {String}
 	 */
 	private getContentTitle(content: String): String {
-		let firstLine = this.trimHTMLTags(content.substring(0, content.indexOf("\n")));
+
+		if (content == null || content.trim() === "") {
+			return "";
+		}
+
+		let newLineIndex = content.indexOf("\n");
+		if (newLineIndex === -1) {
+			newLineIndex = content.length - 1;
+		}
+
+		let firstLine = this.trimHTMLTags(content.substring(0, newLineIndex));
 		return firstLine.substring(0, 25).replace(" ", "_").toLowerCase();
 	}
 

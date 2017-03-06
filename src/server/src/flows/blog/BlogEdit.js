@@ -6,7 +6,8 @@
  */
 module.exports = function(config) {
 
-	let app = config.app, 
+	let app = config.app,
+		database = config.database,
 		applicationUtil = config.applicationUtil;
 
 	/**
@@ -25,6 +26,15 @@ module.exports = function(config) {
 		response.redirect("/profile/login");
 	};
 
+	/**
+	 * function to check if the passed title already exists in DB
+	 * @param title {String}
+	 * @return {Boolean}
+	 */
+	let isExistingTitle = function(title) {
+		return true;
+	};
+
 	app.route("/:blog/edit")
 		.get((request, response) => {
 
@@ -34,8 +44,8 @@ module.exports = function(config) {
 			}
 
 			response.render("index", applicationUtil.processData({
-					blogList: [],
-				}, "index", request));
+				blogList: [],
+			}, "index", request));
 		});
 
 	app.route("/new/blog")
@@ -47,10 +57,46 @@ module.exports = function(config) {
 			}
 
 			response.render("index", applicationUtil.processData({
-					blogList: [],
-				}, "index", request));
+				blogList: [],
+			}, "index", request));
 		})
 		.post((request, response) => {
-			response.send({ called: true });
+
+			let labels = applicationUtil.getLabels();
+
+			if (!isLoggedIn(request)) {
+				response.send({ 
+					success: false,
+					errors: [labels.system.tx_unauthorized_access]
+				});
+
+				return;
+			}
+
+			let errors = [];
+			if (request.body.type !== 0 && request.body.type !== 1) {
+				errors.push(labels.system.tx_save_wrong_type_error);
+			}
+
+			if (request.body.content == null || request.body.content.trim() === "") {
+				errors.push(labels.system.tx_save_empty_content_error);
+			}
+
+			if (request.body.title == null || request.body.title.trim() === "") {
+				errors.push(labels.system.tx_save_empty_title_error);
+			} else if (isExistingTitle(request.body.title)) {
+				errors.push(labels.system.tx_save_existing_title_error);
+			}
+
+			if (errors.length > 0) {
+				response.send({ 
+					success: false,
+					errors: errors
+				});
+
+				return;
+			}
+
+			response.send({ success: true });
 		});
 }
