@@ -18,7 +18,7 @@ const express = require("express"),
 let labels = applicationUtil.loadLabels();
 let settings = applicationUtil.loadApplicationProperty();
 
-app.use(logger);
+//app.use(logger);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname + "/../../static")));
 app.use(session({
@@ -43,6 +43,10 @@ MongoClient.connect(settings.database.application_data_connection_string, functi
 	app.listen(settings.server_port, () => {
 		console.log("running server on port " + settings.server_port);
 		console.log("access content using URL: http://127.0.0.1:" + settings.server_port + "/");
+	});
+
+	process.on('exit', () => {
+		db.close();
 	});
 
 	let config = {

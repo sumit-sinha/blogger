@@ -6,17 +6,17 @@
  */
 module.exports = function(args) {
 
-	let labels = {public: {}, system: {}}, 
-		settings = {},
+	let settings = {},
+		labels = {public: {}, system: {}},
 		languageProperty = args.languageProperty, 
-		applicationPropery = args.applicationPropery;
+		applicationPropery = args.applicationPropery,
 
 	/**
 	 * function to split key based on "."
 	 * @param key {String}
 	 * @return {Array}
 	 */
-	let getKeyArray = function(key) {
+	getKeyArray = function(key) {
 		let keys = null;
 		if (key.indexOf(".") === -1) {
 			keys = ["", key];
@@ -25,14 +25,14 @@ module.exports = function(args) {
 		}
 
 		return keys;
-	};
+	},
 
 	/**
 	 * function to parse data to to get a list of profiles
 	 * @param data {String}
 	 * @return {Array}
 	 */
-	let getProfileLinks = function(data) {
+	getProfileLinks = function(data) {
 
 		let list = [];
 		let values = data.split("|");
@@ -46,28 +46,75 @@ module.exports = function(args) {
 		}
 
 		return list;
-	}
+	},
+
+	/**
+	 * function to fetch content from database
+	 * @param database {Object} object to connect to database
+	 * @return {Promise}
+	 */
+	getRecentBlogs = function(database) {
+		
+		let promise = new Promise((resolve, reject) => {
+			database.collection("blog_details")
+				.find({$query: {type: "0"}, $orderby: { postDate : 1 }})
+				.toArray((error, result) => {
+
+				if (error) {
+					reject(error);
+				}
+
+				let blogs = [];
+				for (let i = 0, length = result.length; i < length; i++) {
+					let blog = result[i];
+					blogs.push({
+						title: blog._id,
+						heading: blog.heading,
+						author: settings.profile.name,
+						postDate: blog.lastUpdated
+					});
+				}
+
+				resolve(blogs);
+			});
+		});
+
+		return promise;
+	};
 
 	return {
 		/**
 		 * function to create a common structure for data to be passed to UI
-		 * @param data {Object}
-		 * @param page {String}
 		 * @param request {Object}
-		 * @return {Object}
+		 * @param database {Object}
+		 * @param page {String}
+		 * @param pageData {Object}
+		 * @return {Promise}
 		 */
-		processData: function(data, page, request) {
-			let object = {data: {}};
-			object.data[page] = data;
-			
-			object.data.labels = labels.public;
-			object.data.global = {
-				profile: settings.profile,
-				logged_in: request.session.logged_in,
-				header: { title: settings.application_title }
-			}
+		processData: function(request, database, page, pageData) {
+			let object = {data: {}},
+				loggedIn = request.session.logged_in;
 
-			return object;
+			object.data[page] = pageData;
+			object.data.labels = labels.public;
+
+			object.data.global = {
+				logged_in: loggedIn,
+				profile: settings.profile,
+				header: { title: settings.application_title }
+			};
+
+			let promise = new Promise((resolve, reject) => {
+				let recentBlogsPromise = getRecentBlogs(database);
+				recentBlogsPromise.then((blogs) => {
+					object.data.global.blogs = blogs;
+					resolve(object);
+				}).catch((error) => {
+					reject(object);
+				});
+			});
+
+			return promise;
 		},
 		/**
 		 * function to read all the labels from properties

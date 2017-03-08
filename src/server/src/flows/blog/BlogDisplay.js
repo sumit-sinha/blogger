@@ -29,16 +29,22 @@ module.exports = function(config) {
 						return;
 					}
 
-					response.render("index", applicationUtil.processData({
+					let pageData = {
 						author: {
 							name: settings.profile.name,
 							link: "/"
 						},
 						type: blogDetail.type,
 						text: blog.content,
-						title: blog.heading,
+						title: blogDetail.heading,
 						postDate: blogDetail.postDate
-					}, "blog", request));
+					};
+
+					applicationUtil.processData(request, database, "blog", pageData).then((data) => {
+						response.render("index", data);
+					}).catch((data) => {
+						response.render("index", data);
+					});
 				});
 			});
 		});

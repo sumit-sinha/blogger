@@ -8,21 +8,21 @@ module.exports = function(config) {
 
 	let app = config.app,
 		database = config.database,
-		applicationUtil = config.applicationUtil;
+		applicationUtil = config.applicationUtil,
 
 	/**
 	 * function to check if user is logged in
 	 * @param request
 	 */
-	let isLoggedIn = function(request) {
+	isLoggedIn = function(request) {
 		return request.session.logged_in;
-	};
+	},
 
 	/**
 	 * function to redirect to login page
 	 * @param response
 	 */
-	let redirectToLoginPage = function(response) {
+	redirectToLoginPage = function(response) {
 		response.redirect("/profile/login");
 	};
 
@@ -34,9 +34,11 @@ module.exports = function(config) {
 				return;
 			}
 
-			response.render("index", applicationUtil.processData({
-				blogList: [],
-			}, "index", request));
+			applicationUtil.processData(request, database, "edit", {}).then((data) => {
+				response.render("index", data);
+			}).catch((data) => {
+				response.render("index", data);
+			});
 		});
 
 	app.route("/new/blog")
@@ -47,9 +49,11 @@ module.exports = function(config) {
 				return;
 			}
 
-			response.render("index", applicationUtil.processData({
-				blogList: [],
-			}, "index", request));
+			applicationUtil.processData(request, database, "edit", {}).then((data) => {
+				response.render("index", data);
+			}).catch((data) => {
+				response.render("index", data);
+			});
 		})
 		.post((request, response) => {
 
@@ -101,7 +105,6 @@ module.exports = function(config) {
 
 			database.collection("blogs").insertOne({
 				_id: title,
-				heading: heading,
 				content: content
 			}, (err, result) => {
 				
@@ -123,6 +126,7 @@ module.exports = function(config) {
 				database.collection("blog_details").insertOne({
 					_id: title,
 					type: type,
+					heading: heading,
 					author: profile.user_id,
 					postDate: currentTime,
 					lastUpdated: currentTime,

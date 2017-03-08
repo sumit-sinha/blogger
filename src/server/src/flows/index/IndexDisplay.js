@@ -13,13 +13,10 @@ module.exports = function(config) {
 	app.route("/")
 		.get((request, response) => {
 
-			database.collection("blog_details").find({}).toArray(function (err, blogList) {
-				
-				if (err) { throw err; }
-				
-				response.render("index", applicationUtil.processData({
-					blogList: blogList,
-				}, "index", request));
+			applicationUtil.processData(request, database, "index", {}).then((data) => {
+				response.render("index", data);
+			}).catch((data) => {
+				response.render("index", data);
 			});
 		});
 }

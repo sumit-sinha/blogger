@@ -7,15 +7,19 @@
 module.exports = function(config) {
 
 	let app = config.app,
+		database = config.database,
 		applicationUtil = config.applicationUtil;
 
 	const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 	app.route("/profile/login")
 		.get((request, response) => {
-			response.render("index", applicationUtil.processData({
-					blogList: [],
-				}, "index", request));
+
+			applicationUtil.processData(request, database, "login", {}).then((data) => {
+				response.render("index", data);
+			}).catch((data) => {
+				response.render("index", data);
+			});
 		})
 		.post((request, response) => {
 
