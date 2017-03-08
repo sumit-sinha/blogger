@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { Router } from '@angular/router';
 import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelper";
 import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHelper";
 
@@ -6,6 +7,9 @@ import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHel
 	selector: "blog-edit",
 	template: `
 		<form>
+
+			<alert-message [message]="error"></alert-message>
+
 			<div [hidden]="!preview.enabled" 
 				[innerHTML]="preview.content" 
 				class="blog-preview">
@@ -17,13 +21,13 @@ import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHel
 				[hidden]="preview.enabled"
 			></blog-editor>
 			
-			<div class="btn-container" *ngIf="ready">
+			<div class="btn-container" *ngIf="editor">
 				<button type="button" class="btn btn-success" (click)="onSaveClick($event, 0)">{{ dataHelper.getLabel("tx_button_save") }}</button>
 				<button type="button" class="btn btn-info" (click)="onSaveClick($event, 1)">{{ dataHelper.getLabel("tx_button_save_draft") }}</button>
 				<button type="button" class="btn btn-primary" (click)="onPreviewClick()">{{ preview.label }}</button>
 			</div>
 
-			<div *ngIf="!ready" class="msk loading"></div>
+			<div *ngIf="loading || editor == null" class="msk {{loading}}"></div>
 		</form>
 	`,
 	styles: [`
@@ -53,6 +57,9 @@ import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHel
 			background: url(/images/gears.gif) no-repeat center;
 			background-color: rgba(30, 31, 31, 0.85);
 		}
+		.msk.loading {
+			background: url(/images/loading.gif) no-repeat center;
+		}
 		@media (max-width: 600px) {
 			form{margin-bottom:20px;}
 		}
@@ -61,16 +68,21 @@ import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHel
 
 export class BlogEditPageComponent {
 
-	ready: Boolean;
+	error: Object;
+
+	loading: String;
+
+	editor: Object;
 
 	preview: Object;
 
-	editor: any;
-
 	dataHelper: ApplicationDataHelper;
 
-	constructor(private networkHelper: NetworkRequestHelper) {
+	constructor(private router: Router,
+				private networkHelper: NetworkRequestHelper) {
 
+		this.error = {};
+		this.loading = null;
 		this.dataHelper = ApplicationDataHelper.getInstance();
 
 		this.preview = { 
@@ -103,7 +115,7 @@ export class BlogEditPageComponent {
 	 * @param editor {TinyMce} editor instance
 	 */
 	editorInitFunction(editor) {
-		this.ready = true;
+		this.loading = null;
 		this.editor = editor;
 	}
 
@@ -114,6 +126,10 @@ export class BlogEditPageComponent {
 	 */
 	onSaveClick($event, type) {
 
+		// reset
+		this.error = {};
+		this.loading = "loading";
+
 		let content = null;
 		if (this.preview.enabled) {
 			content = this.preview.content;
@@ -121,31 +137,36 @@ export class BlogEditPageComponent {
 			content = this.editor.getContent();
 		}
 
-		let contentInformation = this.processContent(content);
+		if (content == null || content.trim() === "") {
+			this.showError({ errors: [this.dataHelper.getLabel("tx_empty_blog_error")] });
+			this.loading = null;
+			return;
+		}
 
-		this.networkHelper.request({
-			url: "/new/blog",
-			method: "POST",
-			parameters: {
+		let contentInformation = this.processContent(content),
+			parameters = {
 				type: type,
 				content: contentInformation.content,
 				title: contentInformation.id,
 				heading: contentInformation.title
 			},
+			callbackArguments = {
+				scope: this,
+				parameters: parameters
+			};
+
+		this.networkHelper.request({
+			url: "/new/blog",
+			method: "POST",
+			parameters: parameters,
 			callback: {
 				success: {
 					fn: this.onSaveCallback, 
-					args: {
-						scope: this,
-						type: type
-					}
+					args: callbackArguments
 				},
 				error: {
 					fn: this.onSaveErrorCallback,
-					args: {
-						scope: this,
-						type: type
-					}
+					args: callbackArguments
 				}
 			}
 		});
@@ -155,6 +176,9 @@ export class BlogEditPageComponent {
 	 * function called when preview button is clicked
 	 */
 	onPreviewClick() {
+
+		// reset
+		this.error = {};
 
 		if (this.preview.enabled) {
 			this.preview.enabled = false;
@@ -174,7 +198,45 @@ export class BlogEditPageComponent {
 	 * @param args {Object}
 	 */
 	private onSaveCallback(response, args) {
-		console.log("success");
+		
+		let scope = args.scope,
+			profile = scope.dataHelper.getGlobalConfig("profile"),
+			json = {};
+
+		try { json = JSON.parse(response._body); } 
+		catch (e) { json.errors = [this.dataHelper.getLabel("tx_response_error")] }
+
+		if (json && json.success) {
+
+			scope.dataHelper.setData({
+				type: "page",
+				page: "blog",
+				data: {
+					author: {
+						name: profile.name,
+						link: "/"
+					},
+					type: args.parameters.type,
+					text: args.parameters.content,
+					title: args.parameters.heading,
+					postDate: args.parameters.postDate
+				}
+			});
+
+			scope.router.navigateByUrl("/" + args.parameters.title);
+
+			return;
+		}
+
+		let errors = [];
+		if (json.errors) {
+			errors = json.errors;
+		} else {
+			errors.push(scope.dataHelper.getLabel("tx_response_error"));
+		}
+
+		scope.showError({ errors: errors });
+		scope.loading = null;
 	}
 
 	/**
@@ -183,7 +245,12 @@ export class BlogEditPageComponent {
 	 * @param args {Object}
 	 */
 	private onSaveErrorCallback(response, args) {
-		console.log("error");
+		
+		let scope = args.scope,
+			errors = [scope.dataHelper.getLabel("tx_network_error")];
+
+		scope.showError({ errors: errors });
+		scope.loading = null;
 	}
 
 	/**
@@ -228,5 +295,21 @@ export class BlogEditPageComponent {
 					.replace(/&nbsp;|&#160;/gi, ' ')
 					.replace(/\s+/ig, ' ')
 					.trim();
+	}
+
+	/**
+	 * function called to display error messages in UI
+	 * @param args {Object}
+	 */
+	private showError(args: Object) {
+		
+		this.error.show = true;
+		this.error.type = "danger";
+		this.error.title = this.dataHelper.getLabel("tx_error_messages");
+		this.error.items = this.error.items || [];
+		
+		for (let i = 0; i < args.errors.length; i++) {
+			this.error.items.push({ text: args.errors[i] });
+		}
 	}
 }

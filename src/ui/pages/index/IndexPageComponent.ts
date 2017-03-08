@@ -12,9 +12,9 @@ import { ApplicationDataHelper } from "../../helpers/data/ApplicationDataHelper"
 	            	<router-outlet></router-outlet>
 	            </div>
 	            <div class="col-lg-4">
+	            	<profile-summary [profile]="data.profile"></profile-summary>
 	                <blog-search [searchData]="data.search"></blog-search>
 	                <blog-list [blogList]="data.blogs"></blog-list>
-	                <profile-summary [profile]="data.profile"></profile-summary>
 	            </div>
 	        </div>
 	    </div>
@@ -59,35 +59,6 @@ export class IndexPageComponent {
 			return;
 		}
 
-		this.data.header.callback = {
-			fn: this.doNavigate,
-			args: {
-				url: "/",
-				scope: this
-			}
-		};
-
-		let isLoggedIn = dataHelper.getGlobalConfig("logged_in");
-		if (isLoggedIn && this.data.header && this.data.header.button == null) {
-			this.data.header.button = {
-				title: dataHelper.getLabel("tx_new_blog"),
-				callback: {
-					fn: this.doNavigate,
-					args: {
-						url: "/new/blog",
-						scope: this
-					}
-				}
-			};
-		}
-	}
-
-	/**
-	 * function called when a button on header is clicked
-	 * @param $event
-	 * @param args
-	 */ 
-	private doNavigate($event, args) {
-		args.scope.router.navigateByUrl(args.url);
+		this.data.header.callback = {fn: ($event) => { this.router.navigateByUrl("/") }};
 	}
 }

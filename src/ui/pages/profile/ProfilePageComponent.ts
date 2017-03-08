@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { Router } from "@angular/router";
 import { ApplicationDataHelper } from "../../helpers/data/ApplicationDataHelper";
 
 @Component({
@@ -22,9 +23,11 @@ export class ProfilePageComponent {
 
 	profile: Object;
 
-	constructor() {
+	constructor(private router: Router) {
 
-		let dataHelper = ApplicationDataHelper.getInstance();
+		let dataHelper = ApplicationDataHelper.getInstance(),
+			header = dataHelper.getGlobalConfig("header"),
+			isLoggedIn = dataHelper.getGlobalConfig("logged_in");
 
 		this.profile = dataHelper.getGlobalConfig("profile");
 		this.labels = {
@@ -32,13 +35,20 @@ export class ProfilePageComponent {
 			"tx_profile_links": dataHelper.getLabel("tx_profile_links")
 		};
 
+		if (isLoggedIn) {
+			header.button = {
+				title: dataHelper.getLabel("tx_new_blog"),
+				callback: {fn: () => { this.router.navigateByUrl("/new/blog"); }}
+			};
+		}
+
 		dataHelper.setData({
 			type: "page",
 			page: "index",
 			data: {
 				profile: null,
+				header: header,
 				blogs: dataHelper.getGlobalConfig("blogs"),
-				header: dataHelper.getGlobalConfig("header"),
 				footer: dataHelper.getGlobalConfig("footer")
 			}
 		});

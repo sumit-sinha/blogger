@@ -34,6 +34,7 @@ module.exports = function(config) {
 							name: settings.profile.name,
 							link: "/"
 						},
+						type: blogDetail.type,
 						text: blog.content,
 						title: blog.heading,
 						postDate: blogDetail.postDate

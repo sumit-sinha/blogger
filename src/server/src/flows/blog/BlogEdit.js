@@ -122,6 +122,7 @@ module.exports = function(config) {
 
 				database.collection("blog_details").insertOne({
 					_id: title,
+					type: type,
 					author: profile.user_id,
 					postDate: currentTime,
 					lastUpdated: currentTime,
