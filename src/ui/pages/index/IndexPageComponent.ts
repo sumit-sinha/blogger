@@ -68,14 +68,15 @@ export class IndexPageComponent {
 		};
 
 		let isLoggedIn = dataHelper.getGlobalConfig("logged_in");
-		if (isLoggedIn) {
-			this.data.header.button = {};
-			this.data.header.button.title = dataHelper.getLabel("tx_new_blog");
-			this.data.header.button.callback = {
-				fn: this.doNavigate,
-				args: {
-					url: "/new/blog",
-					scope: this
+		if (isLoggedIn && this.data.header && this.data.header.button == null) {
+			this.data.header.button = {
+				title: dataHelper.getLabel("tx_new_blog"),
+				callback: {
+					fn: this.doNavigate,
+					args: {
+						url: "/new/blog",
+						scope: this
+					}
 				}
 			};
 		}

@@ -27,6 +27,7 @@ import { Component, Input } from "@angular/core";
 		}
 		.navbar-button button {
 			height: 40px;
+			min-width: 85px;
 			margin-top: 5px;
 			background: #333333;
 			border: none;

@@ -28,7 +28,7 @@ import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHel
 	`,
 	styles: [`
 		button{width: 100px;}
-		form{margin-bottom:60px;}
+		:host(.container){margin-bottom:60px;}
 		.btn-container{
 			background: rgba(35, 35, 35, 0.83);
 			height: 50px;
@@ -121,13 +121,16 @@ export class BlogEditPageComponent {
 			content = this.editor.getContent();
 		}
 
+		let contentInformation = this.processContent(content);
+
 		this.networkHelper.request({
 			url: "/new/blog",
 			method: "POST",
 			parameters: {
 				type: type,
-				content: content,
-				title: this.getContentTitle(content)
+				content: contentInformation.content,
+				title: contentInformation.id,
+				heading: contentInformation.title
 			},
 			callback: {
 				success: {
@@ -185,22 +188,28 @@ export class BlogEditPageComponent {
 
 	/**
 	 * function to generate a random title for application
-	 * @param content {String}
+	 * @param content {Object}
 	 */
-	private getContentTitle(content: String): String {
+	private processContent(content: String): Object {
 
 		if (content == null || content.trim() === "") {
 			return "";
 		}
 
-		let contentWithoutHTML = this.trimHTMLTags(content);
-		let newLineIndex = contentWithoutHTML.indexOf("\n");
+		let newLineIndex = content.indexOf("\n");
 		if (newLineIndex === -1) {
-			newLineIndex = contentWithoutHTML.length;
+			newLineIndex = content.length;
 		}
 
-		let firstLine = contentWithoutHTML.substring(0, newLineIndex);
-		return firstLine.replace(" ", "_").toLowerCase();
+		let firstLine = content.substring(0, newLineIndex),
+			contentWithoutHTML = this.trimHTMLTags(firstLine)
+			content = content.substring(newLineIndex + 1);
+
+		return {
+			content: content,
+			title: contentWithoutHTML,
+			id: contentWithoutHTML.replace(" ", "_").toLowerCase()
+		}
 	}
 
 	/**

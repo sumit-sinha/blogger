@@ -26,15 +26,6 @@ module.exports = function(config) {
 		response.redirect("/profile/login");
 	};
 
-	/**
-	 * function to check if the passed title already exists in DB
-	 * @param title {String}
-	 * @return {Boolean}
-	 */
-	let isExistingTitle = function(title) {
-		return true;
-	};
-
 	app.route("/:blog/edit")
 		.get((request, response) => {
 
@@ -63,6 +54,7 @@ module.exports = function(config) {
 		.post((request, response) => {
 
 			let labels = applicationUtil.getLabels();
+			let settings = applicationUtil.getSettings();
 
 			if (!isLoggedIn(request)) {
 				response.send({ 
@@ -74,9 +66,12 @@ module.exports = function(config) {
 			}
 
 			let errors = [],
+				currentTime = new Date(),
+				profile = settings.profile,
 				type = request.body.type,
 				content = request.body.content,
-				title = request.body.title;
+				title = request.body.title,
+				heading = request.body.heading;
 
 			if (type !== "0" && type !== "1") {
 				errors.push(labels.system.tx_save_wrong_type_error);
@@ -88,8 +83,10 @@ module.exports = function(config) {
 
 			if (title == null || title.trim() === "") {
 				errors.push(labels.system.tx_save_empty_title_error);
-			} else if (isExistingTitle(title)) {
-				errors.push(labels.system.tx_save_existing_title_error);
+			}
+
+			if (heading == null || heading.trim() === "") {
+				errors.push(labels.system.tx_save_empty_title_error);
 			}
 
 			if (errors.length > 0) {
@@ -101,6 +98,56 @@ module.exports = function(config) {
 				return;
 			}
 
-			response.send({ success: true });
+
+			database.collection("blogs").insertOne({
+				_id: title,
+				heading: heading,
+				content: content
+			}, (err, result) => {
+				
+				if (err) {
+
+					let errorMessage = labels.system.tx_save_db_error;
+					if (err.code === 11000) {
+						errorMessage = labels.system.tx_save_existing_title_error;
+					}
+
+					response.send({ 
+						success: false,
+						errors: [errorMessage]
+					});
+
+					return;
+				}
+
+				database.collection("blog_details").insertOne({
+					_id: title,
+					author: profile.user_id,
+					postDate: currentTime,
+					lastUpdated: currentTime,
+				}, (err, result) => {
+
+					if (err) { 
+						
+						let errorMessage = labels.system.tx_save_db_error;
+						if (err.code === 11000) {
+							errorMessage = labels.system.tx_save_existing_title_error;
+						}
+
+						database.blogs.remove({
+							title: title
+						});
+
+						response.send({ 
+							success: false,
+							errors: [errorMessage]
+						});
+
+						return; 
+					}
+
+					response.send({ success: true });
+				});
+			});
 		});
 }
