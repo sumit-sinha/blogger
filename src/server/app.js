@@ -18,7 +18,7 @@ const express = require("express"),
 let labels = applicationUtil.loadLabels();
 let settings = applicationUtil.loadApplicationProperty();
 
-//app.use(logger);
+app.use(logger);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname + "/../../static")));
 app.use(session({

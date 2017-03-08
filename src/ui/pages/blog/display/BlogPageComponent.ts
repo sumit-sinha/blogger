@@ -23,8 +23,6 @@ export class BlogPageComponent {
 			isLoggedIn = dataHelper.getGlobalConfig("logged_in"),
 			header = dataHelper.getGlobalConfig("header");
 
-		this.data = dataHelper.getPageData("blog");
-
 		if (isLoggedIn) {
 			header.button = {
 				title: dataHelper.getLabel("tx_edit_blog"),
@@ -43,6 +41,10 @@ export class BlogPageComponent {
 				blogs: dataHelper.getGlobalConfig("blogs"),
 				header: header
 			}
+		});
+
+		this.route.params.subscribe((params) => {
+			this.data = dataHelper.getPageData("blog");
 		});
 	}
 

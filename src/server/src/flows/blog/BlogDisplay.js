@@ -9,12 +9,28 @@ module.exports = function(config) {
 	let app = config.app,
 		database = config.database,
 		applicationUtil = config.applicationUtil,
-		settings = applicationUtil.getSettings();
+		settings = applicationUtil.getSettings(),
+
+	/**
+	 * function called when we need to send response
+	 * @param response {Object}
+	 * @param data {Object}
+	 * @param isJsonRequest {Boolean}
+	 */
+	sendResponse = function(response, data, isJsonRequest) {
+		if (isJsonRequest) {
+			response.send(data);
+		} else {
+			response.render("index", data);
+		}
+	};
 
 	app.route("/:blog")
 		.get((request, response) => {
 
-			let title = request.params.blog;
+			let title = request.params.blog,
+				isJsonRequest = request.query.is_json === "true";
+
 			database.collection("blog_details").findOne({_id: title}, (err, blogDetail) => {
 
 				if (err || blogDetail == null) {
@@ -40,10 +56,15 @@ module.exports = function(config) {
 						postDate: blogDetail.postDate
 					};
 
+					let fnName = "render";
+					if (isJsonRequest) {
+						fnName = "send"
+					}
+
 					applicationUtil.processData(request, database, "blog", pageData).then((data) => {
-						response.render("index", data);
+						sendResponse(response, data, isJsonRequest);
 					}).catch((data) => {
-						response.render("index", data);
+						sendResponse(response, data, isJsonRequest);
 					});
 				});
 			});

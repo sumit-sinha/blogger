@@ -66,12 +66,18 @@ module.exports = function(args) {
 
 				let blogs = [];
 				for (let i = 0, length = result.length; i < length; i++) {
-					let blog = result[i];
+					let blog = result[i],
+						lastUpdate = new Date(blog.lastUpdated),
+						dateArray = [lastUpdate.getFullYear(), lastUpdate.getMonth(), 
+										lastUpdate.getDate(), lastUpdate.getHours(),
+										lastUpdate.getMinutes(), lastUpdate.getSeconds(),
+										lastUpdate.getMilliseconds()];
+
 					blogs.push({
 						title: blog._id,
 						heading: blog.heading,
 						author: settings.profile.name,
-						postDate: blog.lastUpdated
+						jsDate: dateArray
 					});
 				}
 
