@@ -34,10 +34,15 @@ module.exports = function(config) {
 				return;
 			}
 
-			applicationUtil.processData(request, database, "edit", {}).then((data) => {
-				response.render("index", data);
-			}).catch((data) => {
-				response.render("index", data);
+			let title = request.params.blog;
+			applicationUtil.getBlogInformation(database, title).then((responseData) => {
+				applicationUtil.processData(request, database, "blog", responseData).then((data) => {
+					response.render("index", data);
+				}).catch((data) => {
+					response.render("index", data);
+				});
+			}).catch((error) => {
+				response.render("index", error);
 			});
 		});
 

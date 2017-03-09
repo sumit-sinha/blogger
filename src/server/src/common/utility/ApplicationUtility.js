@@ -123,6 +123,52 @@ module.exports = function(args) {
 			return promise;
 		},
 		/**
+		 * function to get all the details realted to blog
+		 * @param database {Object} connector to database
+		 * @param title {String} title of blog
+		 * @return {Promise}
+		 */
+		getBlogInformation: function(database, title) {
+
+			if (database == null || title == null) {
+				return null;
+			}
+
+			let promise = new Promise((resolve, reject) => {
+				database.collection("blog_details").findOne({_id: title}, (err, blogDetail) => {
+
+					if (err || blogDetail == null) {
+						reject({text: "Unable to find collection", code: -1});
+						return;
+					}
+
+					database.collection("blogs").findOne({_id: title}, (error, blog) => {
+
+						if (error || blog == null) {
+							reject({text: "Unable to find collection", code: -1});
+							return;
+						}
+
+						let pageData = {};
+						pageData[title] = {
+							author: {
+								name: settings.profile.name,
+								link: "/"
+							},
+							type: blogDetail.type,
+							text: blog.content,
+							title: blogDetail.heading,
+							postDate: blogDetail.postDate
+						}
+
+						resolve(pageData);
+					});
+				});
+			});
+
+			return promise;
+		},
+		/**
 		 * function to read all the labels from properties
 		 * it is called before server start
 		 */

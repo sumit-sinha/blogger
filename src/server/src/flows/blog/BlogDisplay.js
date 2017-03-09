@@ -31,43 +31,14 @@ module.exports = function(config) {
 			let title = request.params.blog,
 				isJsonRequest = request.query.is_json === "true";
 
-			database.collection("blog_details").findOne({_id: title}, (err, blogDetail) => {
-
-				if (err || blogDetail == null) {
-					response.redirect("/");
-					return;
-				}
-
-				database.collection("blogs").findOne({_id: title}, (error, blog) => {
-
-					if (error || blog == null) {
-						response.redirect("/");
-						return;
-					}
-
-					let pageData = {};
-					pageData[title] = {
-						author: {
-							name: settings.profile.name,
-							link: "/"
-						},
-						type: blogDetail.type,
-						text: blog.content,
-						title: blogDetail.heading,
-						postDate: blogDetail.postDate
-					}
-
-					let fnName = "render";
-					if (isJsonRequest) {
-						fnName = "send"
-					}
-
-					applicationUtil.processData(request, database, "blog", pageData).then((data) => {
-						sendResponse(response, data, isJsonRequest);
-					}).catch((data) => {
-						sendResponse(response, data, isJsonRequest);
-					});
+			applicationUtil.getBlogInformation(database, title).then((responseData) => {
+				applicationUtil.processData(request, database, "blog", responseData).then((data) => {
+					sendResponse(response, data, isJsonRequest);
+				}).catch((data) => {
+					sendResponse(response, data, isJsonRequest);
 				});
+			}).catch((error) => {
+				sendResponse(response, error, isJsonRequest);
 			});
 		});
 }
