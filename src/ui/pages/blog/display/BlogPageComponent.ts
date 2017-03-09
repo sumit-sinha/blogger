@@ -44,7 +44,7 @@ export class BlogPageComponent {
 		});
 
 		this.route.params.subscribe((params) => {
-			this.data = dataHelper.getPageData("blog");
+			this.data = dataHelper.getPageData("blog")[params.blog];
 		});
 	}
 

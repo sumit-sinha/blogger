@@ -45,7 +45,8 @@ module.exports = function(config) {
 						return;
 					}
 
-					let pageData = {
+					let pageData = {};
+					pageData[title] = {
 						author: {
 							name: settings.profile.name,
 							link: "/"
@@ -54,7 +55,7 @@ module.exports = function(config) {
 						text: blog.content,
 						title: blogDetail.heading,
 						postDate: blogDetail.postDate
-					};
+					}
 
 					let fnName = "render";
 					if (isJsonRequest) {

@@ -14,7 +14,7 @@ import { ApplicationDataHelper } from "../../helpers/data/ApplicationDataHelper"
 	            <div class="col-lg-4">
 	            	<profile-summary [profile]="data.profile"></profile-summary>
 	                <blog-search [searchData]="data.search"></blog-search>
-	                <blog-list [blogList]="data.blogs"></blog-list>
+	                <blog-list [blogList]="data.blogs" (onLinkClickError)="onLinkClickError()"></blog-list>
 	            </div>
 	        </div>
 	    </div>
@@ -48,6 +48,15 @@ export class IndexPageComponent {
 				}
 			}
 		});
+	}
+
+	/**
+	 * function called when links are not responding
+	 * @param error {Object}
+	 * @param args {Object}
+	 */
+	onLinkClickError(error, args) {
+
 	}
 
 	/**

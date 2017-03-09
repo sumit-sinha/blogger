@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { Router } from "@angular/router";
 import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelper";
 import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHelper";
@@ -30,6 +30,9 @@ export class BlogListComponent {
 
 	@Input()
 	blogList: Object;
+
+	@Output()
+	onLinkClickError = new EventEmitter<any>();
 
 	dataHelper: ApplicationDataHelper;
 
@@ -83,13 +86,20 @@ export class BlogListComponent {
 		catch (e) {}
 
 		if (json.data == null || json.data.blog == null || json.data.global == null) {
-			return;
+			scope.onLinkClickError.emit({code: 0}, args);
+		}
+
+		let blogPageData = scope.dataHelper.getPageData("blog") || {};
+		for (let key in json.data.blog) {
+			if (json.data.blog.hasOwnProperty(key)) {
+				blogPageData[key] = json.data.blog[key];
+			}
 		}
 
 		scope.dataHelper.setData({
 			type: "page",
 			page: "blog",
-			data: json.data.blog
+			data: blogPageData
 		});
 
 		for (let key in json.global) {
@@ -112,6 +122,6 @@ export class BlogListComponent {
 	 * @param args {Object}
 	 */
 	private onLinkClickCallbackError(error, args) {
-		// do nothing
+		args.scope.onLinkClickError.emit(error, args);
 	}
 }

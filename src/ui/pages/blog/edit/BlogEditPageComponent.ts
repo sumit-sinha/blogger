@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelper";
 import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHelper";
 
@@ -79,6 +79,7 @@ export class BlogEditPageComponent {
 	dataHelper: ApplicationDataHelper;
 
 	constructor(private router: Router,
+				private route: ActivatedRoute,
 				private networkHelper: NetworkRequestHelper) {
 
 		this.error = {};
@@ -117,6 +118,15 @@ export class BlogEditPageComponent {
 	editorInitFunction(editor) {
 		this.loading = null;
 		this.editor = editor;
+
+		this.route.params.subscribe((params) => {
+			if (params.blog) {
+				let blogPageData = this.dataHelper.getPageData("blog")[params.blog],
+					editorContent = "<h1>"  + blogPageData.title + "</h1>" + blogPageData.text;
+
+				this.editor.setContent(editorContent);
+			}
+		});
 	}
 
 	/**
@@ -208,20 +218,42 @@ export class BlogEditPageComponent {
 
 		if (json && json.success) {
 
+			let pageData = {},
+				postDate = args.parameters.postDate,
+				blogList = scope.dataHelper.getGlobalConfig("blogs");
+
+			pageData[args.parameters.title] = {
+				author: {
+					name: profile.name,
+					link: "/"
+				},
+				type: args.parameters.type,
+				text: args.parameters.content,
+				title: args.parameters.heading,
+				postDate: postDate
+			};
+
+			blogList.push({
+				title: args.parameters.title,
+				heading: args.parameters.heading,
+				author: profile.name,
+				jsDate: [postDate.getFullYear(), postDate.getMonth(), 
+							postDate.getDate(), postDate.getHours(),
+							postDate.getMinutes(), postDate.getSeconds(),
+							postDate.getMilliseconds()]
+			});
+
 			scope.dataHelper.setData({
 				type: "page",
 				page: "blog",
-				data: {
-					author: {
-						name: profile.name,
-						link: "/"
-					},
-					type: args.parameters.type,
-					text: args.parameters.content,
-					title: args.parameters.heading,
-					postDate: args.parameters.postDate
-				}
+				data: pageData
 			});
+
+			scope.dataHelper.setData({
+				type: "global",
+				key: "blogs",
+				data: blogList
+			})
 
 			scope.router.navigateByUrl("/" + args.parameters.title);
 
