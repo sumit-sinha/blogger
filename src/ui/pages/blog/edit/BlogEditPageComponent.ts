@@ -58,7 +58,8 @@ import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHel
 			background-color: rgba(30, 31, 31, 0.85);
 		}
 		.msk.loading {
-			background: url(/images/loading.gif) no-repeat center;
+			background-image: url(/images/loading.gif);
+			background-size: 2em;
 		}
 		@media (max-width: 600px) {
 			form{margin-bottom:20px;}
@@ -78,12 +79,15 @@ export class BlogEditPageComponent {
 
 	dataHelper: ApplicationDataHelper;
 
+	private blogName: String;
+
 	constructor(private router: Router,
 				private route: ActivatedRoute,
 				private networkHelper: NetworkRequestHelper) {
 
 		this.error = {};
 		this.loading = null;
+		this.blogName = null;
 		this.dataHelper = ApplicationDataHelper.getInstance();
 
 		this.preview = { 
@@ -124,6 +128,7 @@ export class BlogEditPageComponent {
 				let blogPageData = this.dataHelper.getPageData("blog")[params.blog],
 					editorContent = "<h1>"  + blogPageData.title + "</h1>" + blogPageData.text;
 
+				this.blogName = params.blog;
 				this.editor.setContent(editorContent);
 			}
 		});
@@ -141,6 +146,7 @@ export class BlogEditPageComponent {
 		this.loading = "loading";
 
 		let content = null;
+
 		if (this.preview.enabled) {
 			content = this.preview.content;
 		} else {
@@ -158,15 +164,21 @@ export class BlogEditPageComponent {
 				type: type,
 				content: contentInformation.content,
 				title: contentInformation.id,
-				heading: contentInformation.title
+				heading: contentInformation.title,
+				isUpdate: this.isUpdate
 			},
 			callbackArguments = {
 				scope: this,
 				parameters: parameters
-			};
+			},
+			url = "/new/blog";
+
+		if (this.blogName != null) {
+			url = "/" + this.blogName + "/edit";
+		}
 
 		this.networkHelper.request({
-			url: "/new/blog",
+			url: url,
 			method: "POST",
 			parameters: parameters,
 			callback: {
@@ -219,7 +231,11 @@ export class BlogEditPageComponent {
 		if (json && json.success) {
 
 			let pageData = {},
-				postDate = args.parameters.postDate,
+				postDate = new Date(),
+				jsDate = [postDate.getFullYear(), postDate.getMonth(), 
+							postDate.getDate(), postDate.getHours(),
+							postDate.getMinutes(), postDate.getSeconds(),
+							postDate.getMilliseconds()],
 				blogList = scope.dataHelper.getGlobalConfig("blogs");
 
 			pageData[args.parameters.title] = {
@@ -230,17 +246,14 @@ export class BlogEditPageComponent {
 				type: args.parameters.type,
 				text: args.parameters.content,
 				title: args.parameters.heading,
-				postDate: postDate
+				jsDate: jsDate
 			};
 
 			blogList.push({
 				title: args.parameters.title,
 				heading: args.parameters.heading,
 				author: profile.name,
-				jsDate: [postDate.getFullYear(), postDate.getMonth(), 
-							postDate.getDate(), postDate.getHours(),
-							postDate.getMinutes(), postDate.getSeconds(),
-							postDate.getMilliseconds()]
+				jsDate: jsDate
 			});
 
 			scope.dataHelper.setData({

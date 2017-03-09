@@ -8,7 +8,6 @@ import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelp
 		<div class="blog-content">
 			<blog-content [content]="data"></blog-content>
 			<hr>
-			<comment-box [comments]="data.comments"></comment-box>
 		</div>
 	`
 })

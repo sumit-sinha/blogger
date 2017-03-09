@@ -49,6 +49,21 @@ module.exports = function(args) {
 	},
 
 	/**
+	 * function to convert date string to array where each index represent a date value
+	 * @param dateString {String}
+	 * @return {Array}
+	 */
+	getDateArrayFromDateString = function(dateString) {
+		let date = new Date(dateString),
+			dateArray = [date.getFullYear(), date.getMonth(), 
+							date.getDate(), date.getHours(),
+							date.getMinutes(), date.getSeconds(),
+							date.getMilliseconds()];
+
+		return dateArray;
+	},
+
+	/**
 	 * function to fetch content from database
 	 * @param database {Object} object to connect to database
 	 * @return {Promise}
@@ -67,11 +82,7 @@ module.exports = function(args) {
 				let blogs = [];
 				for (let i = 0, length = result.length; i < length; i++) {
 					let blog = result[i],
-						lastUpdate = new Date(blog.lastUpdated),
-						dateArray = [lastUpdate.getFullYear(), lastUpdate.getMonth(), 
-										lastUpdate.getDate(), lastUpdate.getHours(),
-										lastUpdate.getMinutes(), lastUpdate.getSeconds(),
-										lastUpdate.getMilliseconds()];
+						dateArray = getDateArrayFromDateString(blog.lastUpdated);
 
 					blogs.push({
 						title: blog._id,
@@ -149,7 +160,9 @@ module.exports = function(args) {
 							return;
 						}
 
-						let pageData = {};
+						let pageData = {},
+							dateArray = getDateArrayFromDateString(blogDetail.lastUpdated);
+
 						pageData[title] = {
 							author: {
 								name: settings.profile.name,
@@ -158,7 +171,7 @@ module.exports = function(args) {
 							type: blogDetail.type,
 							text: blog.content,
 							title: blogDetail.heading,
-							postDate: blogDetail.postDate
+							jsDate: dateArray
 						}
 
 						resolve(pageData);
