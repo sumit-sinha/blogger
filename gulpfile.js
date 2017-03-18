@@ -1,16 +1,15 @@
-const gulp = require("gulp");
-const del = require("del");
-const fs = require("fs");
-const typescript = require("gulp-typescript");
-const sass = require('gulp-sass');
-
-const paths = {
-  dist: 'static/app',
-  distFiles: 'static/app/**/*',
-  srcFiles: 'src/ui/**/*',
-  srcTsFiles: 'src/ui/**/*.ts',
-  srcSassFiles: 'src/ui/**/*.scss'
-}
+const gulp = require("gulp"),
+      del = require("del"),
+      fs = require("fs"),
+      typescript = require("gulp-typescript"),
+      sass = require('gulp-sass'),
+      paths = {
+        dist: 'static/app',
+        distFiles: 'static/app/**/*',
+        srcFiles: 'src/ui/**/*',
+        srcTsFiles: 'src/ui/**/*.ts',
+        srcSassFiles: 'src/ui/**/*.scss'
+      }
 
 gulp.task('clean', function () {
   return del(paths.distFiles);
@@ -38,7 +37,7 @@ gulp.task('copy:libs', ['clean'], function() {
       'node_modules/rxjs/*.js'
     ])
     .pipe(gulp.dest(function(file) {
-      return paths.dist + "/" + file.path.substring(file.path.indexOf("node_modules"), file.path.lastIndexOf("/"));
+      return file.path.replace("node_modules", paths.dist + "/node_modules");
     }));
 });
 

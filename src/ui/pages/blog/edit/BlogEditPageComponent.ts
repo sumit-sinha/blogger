@@ -162,10 +162,9 @@ export class BlogEditPageComponent {
 		let contentInformation = this.processContent(content),
 			parameters = {
 				type: type,
-				content: contentInformation.content,
-				title: contentInformation.id,
 				heading: contentInformation.title,
-				isUpdate: this.isUpdate
+				content: contentInformation.content,
+				title: (this.blogName == null)?contentInformation.id:this.blogName,
 			},
 			callbackArguments = {
 				scope: this,
@@ -266,7 +265,7 @@ export class BlogEditPageComponent {
 				type: "global",
 				key: "blogs",
 				data: blogList
-			})
+			});
 
 			scope.router.navigateByUrl("/" + args.parameters.title);
 
