@@ -11,7 +11,8 @@ html(lang='en')
 		link(href='/styles/bootstrap.css', rel='stylesheet')
 	body
 
-		blog(init-data= data) please wait...
+		blog(init-data= data)
+			span(class='loading') Please wait...
 
 		script(src='/scripts/tinymce.js')
 		script(src='/scripts/tinymce_theme.js')
