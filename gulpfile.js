@@ -37,7 +37,10 @@ gulp.task('copy:libs', ['clean'], function() {
       'node_modules/rxjs/*.js'
     ])
     .pipe(gulp.dest(function(file) {
-      return file.path.replace("node_modules", paths.dist + "/node_modules");
+      var destinationFile = file.path.replace("node_modules", paths.dist + "/node_modules"),
+          destinationFolder = destinationFile.substring(0, destinationFile.lastIndexOf("/"));
+
+      return destinationFolder;
     }));
 });
 

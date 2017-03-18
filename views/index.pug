@@ -6,7 +6,7 @@ html(lang='en')
 		meta(name='viewport', content='width=device-width, initial-scale=1')
 		meta(name='description', content='technical blogs on UI development and other stuff')
 		meta(name='author', content='ssinha')
-		title #{data.global.header.title}
+		title #{data ? data.global.header.title: ''}
 
 		link(href='/styles/bootstrap.css', rel='stylesheet')
 	body
