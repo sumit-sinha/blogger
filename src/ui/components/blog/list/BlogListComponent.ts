@@ -6,7 +6,7 @@ import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHel
 @Component({
 	selector: "blog-list",
 	template: `
-		<div class="well">
+		<div class="well" *ngIf="blogList && !blogList.isSearchContent">
 			<h4>{{ dataHelper.getLabel("tx_latest_blogs") }}</h4>
 			<div class="row">
 				<div class="col-lg-12">
@@ -23,6 +23,22 @@ import { NetworkRequestHelper } from "../../../helpers/network/NetworkRequestHel
 				</div>
 			</div>
 		</div>
+		<div class="well" *ngIf="blogList && blogList.isSearchContent">
+				<div class="row">
+					<div class="col-lg-12">
+						<ul class="list-unstyled">
+							<ng-container *ngIf="blogList && blogList.blogs && blogList.blogs?.length > 0">
+								<li *ngFor="let blog of blogList.blogs | reverse">
+									<a href="javascript:void(0)" (click)="onLinkClick($event, blog.title)">{{ blog.heading }}</a>
+								</li>
+							</ng-container>
+							<li *ngIf="blogList == null || blogList.blogs?.length == 0">
+								{{ dataHelper.getLabel("tx_blog_searched_blogs_by_user") }}
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
 	`
 })
 

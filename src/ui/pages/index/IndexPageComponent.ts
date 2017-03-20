@@ -13,7 +13,7 @@ import { ApplicationDataHelper } from "../../helpers/data/ApplicationDataHelper"
 	            </div>
 	            <div class="col-lg-4">
 	            	<profile-summary [profile]="data.profile"></profile-summary>
-	                <blog-search [searchData]="data.search"></blog-search>
+	                <blog-search [searchData]="data.blogs"></blog-search>
 	                <blog-list [blogList]="data.blogs" (onLinkClickError)="onLinkClickError()"></blog-list>
 	            </div>
 	        </div>
@@ -36,6 +36,7 @@ export class IndexPageComponent {
 	constructor(private router: Router) {
 
 		this.data = { };
+		this.recentBlogData={};
 		let dataHelper = ApplicationDataHelper.getInstance();
 
 		dataHelper.subscribeDataChange({
@@ -48,6 +49,8 @@ export class IndexPageComponent {
 				}
 			}
 		});
+		this.recentBlogData.blogs = this.data.blogs;
+		this.recentBlogData.isRecentBlog = true;
 	}
 
 	/**
