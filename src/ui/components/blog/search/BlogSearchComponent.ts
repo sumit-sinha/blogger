@@ -14,7 +14,7 @@ import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelp
 					</button>
 				</span>
 			</div>
-			<blog-list [blogList]="searchContentData" (onLinkClickError)="onLinkClickError()"></blog-list>
+			<blog-list *ngIf="searchContentData != null && searchContentData.isSearchContent" [blogList]="searchContentData" (onLinkClickError)="onLinkClickError()"></blog-list>
 
 		</div>
 	`
