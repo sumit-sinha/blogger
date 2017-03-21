@@ -3,16 +3,75 @@ const gulp = require("gulp"),
       fs = require("fs"),
       typescript = require("gulp-typescript"),
       sass = require('gulp-sass'),
+      pump = require('pump'),
+      uglify = require('gulp-uglify'),
+      path = require('path'),
       paths = {
-        dist: 'static/app',
-        distFiles: 'static/app/**/*',
+        dist: 'dist/app',
+        distLibs: 'dist/scripts',
+        distFiles: 'dist/**/*',
+        distJSLibs: 'dist/scripts/**/*.js',
+        distJSFiles: 'dist/app/**/*.js',
         srcFiles: 'src/ui/**/*',
         srcTsFiles: 'src/ui/**/*.ts',
         srcSassFiles: 'src/ui/**/*.scss'
-      }
+      };
+
+/**
+ * function to get destination folder for a file
+ * @param folder {String} path to destination folder
+ * @return {String}
+ */
+var getDestinationFolder = function(folder) {
+  return path.join(__dirname + "/" + folder);
+};
 
 gulp.task('clean', function () {
   return del(paths.distFiles);
+});
+
+gulp.task('copy:static:scripts', ['clean'], function() {
+  return gulp.src([
+      'static/scripts/**/*.js',
+      'static/scripts/**/*.css'
+    ])
+    .pipe(gulp.dest(function(file) {
+      return getDestinationFolder('dist/scripts');
+    }));
+});
+
+gulp.task('copy:static:images', ['clean'], function() {
+  return gulp.src([
+      'static/images/**/*.png',
+      'static/images/**/*.jpg',
+      'static/images/**/*.jpeg',
+      'static/images/**/*.gif',
+    ])
+    .pipe(gulp.dest(function(file) {
+      return getDestinationFolder('dist/images');
+    }));
+});
+
+gulp.task('copy:static:fonts', ['clean'], function() {
+  return gulp.src([
+      'static/fonts/**/*.eot',
+      'static/fonts/**/*.svg',
+      'static/fonts/**/*.ttf',
+      'static/fonts/**/*.woff',
+      'static/fonts/**/*.woff2',
+    ])
+    .pipe(gulp.dest(function(file) {
+      return getDestinationFolder('dist/fonts');
+    }));
+});
+
+gulp.task('copy:static:css', ['clean'], function() {
+  return gulp.src([
+      'static/styles/**/*'
+    ])
+    .pipe(gulp.dest(function(file) {
+      return getDestinationFolder('dist/styles');
+    }));
 });
 
 gulp.task('copy:libs', ['clean'], function() {
@@ -37,7 +96,6 @@ gulp.task('copy:libs', ['clean'], function() {
       'node_modules/rxjs/*.js'
     ])
     .pipe(gulp.dest(function(file) {
-
       var separator = "/";
       if (file.path.indexOf(separator) === -1) {
         separator = "\\";
@@ -58,7 +116,6 @@ gulp.task('sass:components', ['clean'], function () {
     }));
 });
 
-
 gulp.task('compile', ['clean'], function () {
   const tscConfig = JSON.parse(fs.readFileSync('./tsconfig.json', 'UTF8'));
   return gulp
@@ -67,5 +124,15 @@ gulp.task('compile', ['clean'], function () {
     .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('prepare', ['clean', 'compile', 'copy:libs', 'sass:components']);
-gulp.task('default', ['prepare']);
+gulp.task('compress:libs', ['prepare'], function(cb) {
+  pump([gulp.src(paths.distJSLibs), uglify(), gulp.dest(paths.distLibs)], cb);
+});
+
+gulp.task('compress:source', ['prepare'], function(cb) {
+  pump([gulp.src(paths.distJSFiles), uglify(), gulp.dest(paths.dist)], cb);
+});
+
+gulp.task('copy', ['copy:libs', 'copy:static:scripts', 'copy:static:fonts', 'copy:static:css', 'copy:static:images']);
+gulp.task('prepare', ['clean', 'compile', 'copy', 'sass:components']);
+gulp.task('compress', ['compress:libs', 'compress:source']);
+gulp.task('default', ['compress']);

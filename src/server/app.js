@@ -19,7 +19,7 @@ let settings = applicationUtil.loadApplicationProperty();
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-app.use(express.static(path.join(__dirname + "/../../static")));
+app.use(express.static(path.join(__dirname + "/../../dist")));
 app.use(session({
 	secret: settings.session_secret,
 	resave: false,

@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  AfterViewInit,
-  EventEmitter,
-  Input,
-  Output
-} from "@angular/core";
+import { Component, OnDestroy, AfterViewInit, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
   selector: "blog-editor",
@@ -28,7 +21,18 @@ export class BlogEditorComponent implements AfterViewInit, OnDestroy {
   editor: Object;
 
   ngAfterViewInit() {
+    this.initEditor();
+  }
 
+  ngOnDestroy() {
+    tinymce.remove(this.editor);
+  }
+
+  /**
+   * function called to create a new TinyMCE editor<br/>
+   * it will be called once the scripts are loaded
+   */
+  private initEditor() {
     tinymce.init({
       selector: "#" + this.elementId,
       height: 500,
@@ -58,9 +62,5 @@ export class BlogEditorComponent implements AfterViewInit, OnDestroy {
         });
       }
     });
-  }
-
-  ngOnDestroy() {
-    tinymce.remove(this.editor);
   }
 }
