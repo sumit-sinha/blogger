@@ -38364,7 +38364,7 @@ define("tinymce/Editor", [
 		self.settings = settings;
 		AddOnManager.language = settings.language || 'en';
 		AddOnManager.languageLoad = settings.language_load;
-		AddOnManager.baseURL = editorManager.baseURL;
+		AddOnManager.baseURL = '/scripts';
 
 		/**
 		 * Editor instance id, normally the same as the div/textarea that was replaced.

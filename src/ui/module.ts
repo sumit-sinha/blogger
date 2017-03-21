@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, enableProdMode } from "@angular/core";
 import { HttpModule } from "@angular/http";
 import { APP_BASE_HREF } from '@angular/common';
 import { RouterModule } from "@angular/router";
@@ -81,4 +81,5 @@ import { ValidationHelper } from "./helpers/validation/ValidationHelper";
 
 class AppModule {}
 
+enableProdMode();
 platformBrowserDynamic().bootstrapModule(AppModule);

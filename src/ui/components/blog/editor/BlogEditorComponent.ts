@@ -21,7 +21,11 @@ export class BlogEditorComponent implements AfterViewInit, OnDestroy {
   editor: Object;
 
   ngAfterViewInit() {
-    this.initEditor();
+    System.import("/scripts/tinymce.js").then(() => {
+      System.import("/scripts/tinymce_theme.js").then(() => {
+        this.initEditor();
+      })
+    });
   }
 
   ngOnDestroy() {
