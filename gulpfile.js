@@ -6,6 +6,7 @@ const gulp = require("gulp"),
       pump = require('pump'),
       uglify = require('gulp-uglify'),
       path = require('path'),
+      nodemon = require('gulp-nodemon'),
       paths = {
         dist: 'dist/app',
         distLibs: 'dist/scripts',
@@ -130,6 +131,25 @@ gulp.task('compress:libs', ['prepare'], function(cb) {
 
 gulp.task('compress:source', ['prepare'], function(cb) {
   pump([gulp.src(paths.distJSFiles), uglify(), gulp.dest(paths.dist)], cb);
+});
+
+gulp.task('watch', ['compress'], function() {
+  gulp.watch(paths.srcFiles, ['compress']);
+});
+
+gulp.task('nodemon', function() {
+  nodemon({
+    script: 'src/server/app.js',
+    ext: 'js',
+    env: {
+      'NODE_ENV': 'development'
+    }
+  })
+  .on('start', ['watch'])
+  .on('change', ['watch'])
+  .on('restart', function () {
+    console.log('server restarted!!!');
+  });
 });
 
 gulp.task('copy', ['copy:libs', 'copy:static:scripts', 'copy:static:fonts', 'copy:static:css', 'copy:static:images']);
