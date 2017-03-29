@@ -243,7 +243,7 @@ export class BlogEditPageComponent {
 					link: "/"
 				},
 				type: args.parameters.type,
-				text: args.parameters.content,
+				text: unescape(args.parameters.content),
 				title: args.parameters.heading,
 				jsDate: jsDate
 			};
@@ -313,13 +313,33 @@ export class BlogEditPageComponent {
 		}
 
 		let firstLine = content.substring(0, newLineIndex),
-			contentWithoutHTML = this.trimHTMLTags(firstLine)
-			content = content.substring(newLineIndex + 1);
+			contentWithoutHTML = this.trimHTMLTags(firstLine);
+
+		content = content.substring(newLineIndex + 1);
+
+		let contentId = contentWithoutHTML,
+			contentIdDelimeters = [{
+				original: " ", 
+				replacedBy: "_"
+			}, {
+				original: ",", 
+				replacedBy: ""
+			}, {
+				original: "-",
+				replacedBy: ""
+			}];
+
+		for (let i = 0, length = contentIdDelimeters.length; i < length; i++) {
+			let delimeter = contentIdDelimeters[i];
+			while (contentId.indexOf(delimeter.original) !== -1) {
+				contentId = contentId.replace(delimeter.original, delimeter.replacedBy);
+			}
+		}
 
 		return {
-			content: content,
+			content: escape(content),
 			title: contentWithoutHTML,
-			id: contentWithoutHTML.replace(" ", "_").toLowerCase()
+			id: contentId.toLowerCase()
 		}
 	}
 

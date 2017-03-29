@@ -13,7 +13,7 @@ import { ApplicationDataHelper } from "../../../helpers/data/ApplicationDataHelp
 		<hr>
 		<p><span class="glyphicon glyphicon-time"></span>{{ getPostedOnMessage() }}</p>
 		<hr>
-		<div [innerHTML]="content.text"></div>
+		<div [innerHTML]="unescapeContent(content.text)"></div>
 	`,
 	providers:[DatePipe],
 	styles: [`span.glyphicon{margin-right:5px;font-size:12px;}`]
@@ -25,7 +25,7 @@ export class BlogContentComponent {
 	content: Object;
 
 	constructor(private router: Router,
-				private datePipe: DatePipe) { }
+				private datePipe: DatePipe) {}
 
 	/**
 	 * function called when hyperlink is clicked
@@ -34,6 +34,15 @@ export class BlogContentComponent {
 	 */
 	onLinkClick($event, url) {
 		this.router.navigateByUrl(url);
+	}
+
+	/**
+	 * function to unescape HTML characters
+	 * @param text {String}
+	 @ return {String}
+	 */
+	unescapeContent(text: String): String {
+		return unescape(text);
 	}
 
 	/**
