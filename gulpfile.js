@@ -7,16 +7,27 @@ const gulp = require("gulp"),
       uglify = require('gulp-uglify'),
       path = require('path'),
       nodemon = require('gulp-nodemon'),
+      concat = require('gulp-concat'),
       paths = {
         dist: 'dist/app',
-        distLibs: 'dist/scripts',
         distFiles: 'dist/**/*',
-        distJSLibs: 'dist/scripts/**/*.js',
-        distJSFiles: 'dist/app/**/*.js',
         srcFiles: 'src/ui/**/*',
-        srcTsFiles: 'src/ui/**/*.ts',
         srcSassFiles: 'src/ui/**/*.scss'
       };
+
+/**
+ * function to get separator based on OS format
+ * @param file {String} path to current file
+ * @return {String}
+ */
+var getSeparator = function(file) {
+  var separator = "/";
+  if (file.path.indexOf(separator) === -1) {
+    separator = "\\";
+  }
+
+  return separator;
+};
 
 /**
  * function to get destination folder for a file
@@ -96,13 +107,10 @@ gulp.task('copy:libs', ['clean'], function() {
       'node_modules/rxjs/add/observable/throw.js',
       'node_modules/rxjs/*.js'
     ])
+    .pipe(uglify())
     .pipe(gulp.dest(function(file) {
-      var separator = "/";
-      if (file.path.indexOf(separator) === -1) {
-        separator = "\\";
-      }
-
-      var destinationFile = file.path.replace("node_modules", paths.dist + separator + "node_modules"),
+      var separator = getSeparator(file),
+          destinationFile = file.path.replace("node_modules", paths.dist + separator + "node_modules"),
           destinationFolder = destinationFile.substring(0, destinationFile.lastIndexOf(separator));
 
       return destinationFolder;
@@ -122,19 +130,12 @@ gulp.task('compile', ['clean'], function () {
   return gulp
     .src(tscConfig.files)
     .pipe(typescript(tscConfig.compilerOptions))
+    .pipe(uglify())
     .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('compress:libs', ['prepare'], function(cb) {
-  pump([gulp.src(paths.distJSLibs), uglify(), gulp.dest(paths.distLibs)], cb);
-});
-
-gulp.task('compress:source', ['prepare'], function(cb) {
-  pump([gulp.src(paths.distJSFiles), uglify(), gulp.dest(paths.dist)], cb);
-});
-
-gulp.task('watch', ['compress'], function() {
-  gulp.watch(paths.srcFiles, ['compress']);
+gulp.task('watch', ['prepare'], function() {
+  gulp.watch(paths.srcFiles, ['prepare']);
 });
 
 gulp.task('nodemon', function() {
@@ -154,5 +155,4 @@ gulp.task('nodemon', function() {
 
 gulp.task('copy', ['copy:libs', 'copy:static:scripts', 'copy:static:fonts', 'copy:static:css', 'copy:static:images']);
 gulp.task('prepare', ['clean', 'compile', 'copy', 'sass:components']);
-gulp.task('compress', ['compress:libs', 'compress:source']);
-gulp.task('default', ['compress']);
+gulp.task('default', ['prepare']);
