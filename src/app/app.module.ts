@@ -1,20 +1,85 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { APP_BASE_HREF } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { BrowserModule } from '@angular/platform-browser';
 
-import { AppComponent } from './app.component';
+import { IndexPageComponent } from './pages/index/IndexPageComponent';
+import { BlogPageComponent } from './pages/blog/display/BlogPageComponent';
+import { BlogEditPageComponent } from './pages/blog/edit/BlogEditPageComponent';
+import { ProfilePageComponent } from './pages/profile/ProfilePageComponent';
+import { NavigationBarComponent } from './components/navigation/NavigationBarComponent';
+import { BlogListComponent } from './components/blog/list/BlogListComponent';
+import { BlogSearchComponent } from './components/blog/search/BlogSearchComponent';
+import { BlogContentComponent } from './components/blog/content/BlogContentComponent';
+import { BlogEditorComponent } from './components/blog/editor/BlogEditorComponent';
+import { ProfileSummaryComponent } from './components/profile/summary/ProfileSummaryComponent';
+import { ProfileLoginComponent } from './components/profile/login/ProfileLoginComponent';
+import { CommentBoxComponent } from './components/comment/box/CommentBoxComponent';
+import { CommentMessageComponent } from './components/comment/message/CommentMessageComponent';
+import { InputBoxComponent } from './components/form/InputBoxComponent';
+import { CheckboxComponent } from './components/form/CheckboxComponent';
+import { LoadingButtonComponent } from './components/form/LoadingButtonComponent';
+import { AlertMessageComponent } from './components/message/AlertMessageComponent';
+
+import { TrimStringPipe } from './pipes/string/TrimStringPipe';
+import { ReverseArrayPipe } from './pipes/array/ReverseArrayPipe';
+import { NetworkRequestHelper } from './helpers/network/NetworkRequestHelper';
+import { ValidationHelper } from './helpers/validation/ValidationHelper';
+import { LazyLoadHelper } from './helpers/network/LazyLoadHelper';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
   imports: [
+    HttpModule,
     BrowserModule,
-    FormsModule,
-    HttpModule
+    RouterModule.forRoot([{
+      path: '',
+      component: ProfilePageComponent
+    }, {
+      path: ':blog',
+      component: BlogPageComponent
+    }, {
+      path: ':blog/edit',
+      component: BlogEditPageComponent
+    }, {
+      path: 'new/blog',
+      component: BlogEditPageComponent
+    }, {
+      path: 'profile/login',
+      component: ProfileLoginComponent
+    }])
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  declarations: [
+    IndexPageComponent,
+    BlogPageComponent,
+    BlogEditPageComponent,
+    ProfilePageComponent,
+    NavigationBarComponent,
+    BlogListComponent,
+    BlogSearchComponent,
+    BlogContentComponent,
+    BlogEditorComponent,
+    ProfileSummaryComponent,
+    ProfileLoginComponent,
+    CommentBoxComponent,
+    CommentMessageComponent,
+    InputBoxComponent,
+    CheckboxComponent,
+    LoadingButtonComponent,
+    AlertMessageComponent,
+
+    TrimStringPipe,
+    ReverseArrayPipe
+  ],
+  providers: [{
+      provide: APP_BASE_HREF,
+      useValue: '/'
+    },
+    NetworkRequestHelper,
+    ValidationHelper,
+    LazyLoadHelper
+  ],
+  bootstrap: [IndexPageComponent]
 })
-export class AppModule { }
+
+export class AppModule {}

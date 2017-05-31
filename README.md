@@ -1,28 +1,37 @@
 # Blogger
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
+Blogger is a node based application to host personal blogging application. It is developed using angular 2 and express JS with MongoDB as database server.
 
-## Development server
+# Features!
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+  - Login and create a new blog
+  - Authenticated users can edit an existing blog
+  - Change application settings i.e. name of blog, admin account etc
 
-## Code scaffolding
+**Note**: Application can be fully customised by changing some parameters in "application.properties" file
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class/module`.
+### Tech
 
-## Build
+* [AngularJS] - HTML enhanced for web apps!
+* [Twitter Bootstrap] - great UI boilerplate for modern web apps
+* [node.js] - evented I/O for the backend
+* [Express] - fast node.js network app framework [@tjholowaychuk]
+* [Gulp] - the streaming build system
+* [Mongo DB](https://www.mongodb.com/) - open source non-relational database
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+### Installation
 
-## Running unit tests
+To install application you need to type below commands in a terminal shell from application's root folder
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```sh
+$ npm install
+$ npm start
+```
+This will start a server at http://127.0.0.1:3000/
 
-## Running end-to-end tests
+For production environments...
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```sh
+$ npm install
+$ npm run start_prod
+```

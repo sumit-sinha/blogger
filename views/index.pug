@@ -1,0 +1,22 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge')
+		meta(name='viewport', content='width=device-width, initial-scale=1')
+		meta(name='description', content='technical blogs on UI development and other stuff')
+		meta(name='author', content='ssinha')
+		title #{data ? data.global.header.title: ''}
+
+		link(href='/styles/bootstrap.css', rel='stylesheet')
+		link(rel='icon', type='image/x-icon', href='/favicon.ico')
+	body
+
+		blog(init-data= data)
+			span(class='loading') Please wait...
+
+		<!-- injected content -->
+		<script type="text/javascript" src="/inline.830f7e24081b29702ada.bundle.js"></script>
+		<script type="text/javascript" src="/polyfills.a2a2d6b36c5858f2e2d4.bundle.js"></script>
+		<script type="text/javascript" src="/vendor.d2e3c4038facdd595123.bundle.js"></script>
+		<script type="text/javascript" src="/main.472c3ae3f989e2e2a646.bundle.js"></script>
