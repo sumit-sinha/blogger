@@ -12,11 +12,11 @@ Blogger is a node based application to host personal blogging application. It is
 
 ### Tech
 
-* [AngularJS] - HTML enhanced for web apps!
-* [Twitter Bootstrap] - great UI boilerplate for modern web apps
-* [node.js] - evented I/O for the backend
-* [Express] - fast node.js network app framework [@tjholowaychuk]
-* [Gulp] - the streaming build system
+* [AngularJS](https://angularjs.org/) - HTML enhanced for web apps!
+* [Twitter Bootstrap](http://getbootstrap.com/) - great UI boilerplate for modern web apps
+* [node.js](https://nodejs.org/en/) - evented I/O for the backend
+* [Express](https://expressjs.com/) - fast node.js network app framework
+* [Gulp](http://gulpjs.com/) - the streaming build system
 * [Mongo DB](https://www.mongodb.com/) - open source non-relational database
 
 ### Installation
