@@ -38,10 +38,12 @@ MongoClient.connect(settings.database.application_data_connection_string, functi
 
 	if (err) { throw err }
 
+  const port = process.env.PORT || settings.server_port;
+
 	app.set('view engine', 'pug');
-	app.listen(settings.server_port, () => {
-		console.log("running server on port " + settings.server_port);
-		console.log("access content using URL: http://127.0.0.1:" + settings.server_port + "/");
+	app.listen(port, () => {
+		console.log("running server on port " + port);
+		console.log("access content using URL: http://127.0.0.1:" + port + "/");
 	});
 
 	process.on('exit', () => {
