@@ -1,3 +1,5 @@
+declare function escape(s: string): string;
+
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationDataHelper } from '../../../helpers/data/ApplicationDataHelper';
@@ -349,7 +351,7 @@ export class BlogEditPageComponent {
     }
 
     return {
-      content: encodeURI(content),
+      content: escape(content),
       title: contentWithoutHTML,
       id: contentId.toLowerCase()
     };
